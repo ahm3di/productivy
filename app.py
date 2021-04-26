@@ -6,18 +6,28 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+
 class Todo(db.Model):
-    id = db.Column(db.Integer, primary_key= True)
+    id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100))
-    complete = db.Column(db.Boolean)
+    complete = db.Column(db.BOOLEAN)
 
 
 @app.route('/')
 def index():
-    return render_template('base.html')
-
-
-if __name__ == "__main__":
     db.create_all()
+    todo = Todo(title="Todo 1", complete=False)
+    db.session.add(todo)
+    db.session.commit()
 
-    app.run(debug=True)
+    # Show all todos
+    todo_list = Todo.query.all()
+    print(todo_list)
+    return render_template('base.html', todo_list=todo_list)
+
+
+
+
+
+
+
