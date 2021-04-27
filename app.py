@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -16,9 +16,6 @@ class Todo(db.Model):
 @app.route('/')
 def index():
     db.create_all()
-    todo = Todo(title="Todo 1", complete=False)
-    db.session.add(todo)
-    db.session.commit()
 
     # Show all todos
     todo_list = Todo.query.all()
@@ -26,6 +23,32 @@ def index():
     return render_template('base.html', todo_list=todo_list)
 
 
+@app.route("/add", methods=["POST"])
+def add():
+    # Add new todo
+    title = request.form.get("title")
+    new_todo = Todo(title=title, complete=False)
+    db.session.add(new_todo)
+    db.session.commit()
+    return redirect(url_for("index"))
+
+
+@app.route("/update/<int:todo_id>")
+def update(todo_id):
+    # Update todo
+    todo = Todo.query.filter_by(id=todo_id).first()
+    todo.complete = not todo.complete
+    db.session.commit()
+    return redirect(url_for("index"))
+
+
+@app.route("/delete/<int:todo_id>")
+def delete(todo_id):
+    # Delete todo
+    todo = Todo.query.filter_by(id=todo_id).first()
+    db.session.delete(todo)
+    db.session.commit()
+    return redirect(url_for("index"))
 
 
 
