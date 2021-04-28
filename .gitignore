@@ -100,3 +100,6 @@ ENV/
 
 # sqlite
 /db.sqlite
+
+# flaskenv
+.flaskenv

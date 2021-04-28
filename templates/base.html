@@ -3,34 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <title>Todo App</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.7/dist/semantic.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.7/dist/semantic.min.js"></script>
+
 </head>
 <body>
-    <h1> Todo App </h1>
 
+<div class="ui centered grid">
 
-    <form action="/add" method="post">
-        <div>
-            <input type="text" name="title" placeholder="Enter Todo...">
-            <button type="submit">Add</button>
-
-
+<!--<h1 style="margin-top: 1%" class="ui center aligned header"> Todo App </h1>-->
+    <div class="row">
+<h1 style="margin-top: 1%"> Todo App </h1>
         </div>
 
+<div class="row">
+<form action="/add" method="post">
 
-    </form>
+    <div class="ui action left icon input">
+        <input type="text" name="title" placeholder="Enter Todo...">
+        <button class="ui teal button" type="submit">Add</button>
+</div>
 
-    {% for todo in todo_list%}
-        <p> {{ todo.id }} | {{ todo.title }}</p>
+</form>
+    </div>
 
-        {% if todo.complete == False %}
-            <span>Not Complete</span>
-        {% else %}
-            <span>Completed</span>
-        {% endif %}
+{% for todo in todo_list%}
+<div class="column">
 
-        <a href="/update/{{ todo.id }}">Update</a>
-        <a href="/delete/{{ todo.id }}">Delete</a>
+    <p> {{ todo.title }} </p>
 
+    {% if todo.complete == False %}
+    <span>Not Complete</span>
+    {% else %}
+    <span>Completed</span>
+    {% endif %}
+
+    <a href="/update/{{ todo.id }}">Update</a>
+    <a href="/delete/{{ todo.id }}">Delete</a>
     {% endfor %}
+
+</div>
+</div>
+
+
 </body>
 </html>
