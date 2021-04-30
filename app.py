@@ -33,9 +33,9 @@ def add():
     return redirect(url_for("index"))
 
 
-@app.route("/update/<int:todo_id>")
-def update(todo_id):
-    # Update todo
+@app.route("/update_status/<int:todo_id>")
+def update_status(todo_id):
+    # Update todo status
     todo = Todo.query.filter_by(id=todo_id).first()
     todo.complete = not todo.complete
     db.session.commit()
@@ -51,6 +51,13 @@ def delete(todo_id):
     return redirect(url_for("index"))
 
 
+@app.route("/update/<int:todo_id>")
+def update (todo_id):
+    # Update todo
+
+    # Code to update todo title
+
+    return redirect(url_for("index"))
 
 
 

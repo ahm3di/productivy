@@ -13,40 +13,44 @@
 
 <div class="ui centered grid">
 
-<!--<h1 style="margin-top: 1%" class="ui center aligned header"> Todo App </h1>-->
+    <!--<h1 style="margin-top: 1%" class="ui center aligned header"> Todo App </h1>-->
     <div class="row">
-<h1 style="margin-top: 1%"> Todo App </h1>
-        </div>
-
-<div class="row">
-<form action="/add" method="post">
-
-    <div class="ui action left icon input">
-        <input type="text" name="title" placeholder="Enter Todo...">
-        <button class="ui teal button" type="submit">Add</button>
-</div>
-
-</form>
+        <h1 style="margin-top: 1%">What do you want to do today?</h1>
     </div>
 
-{% for todo in todo_list%}
-<div class="column">
+    <div class="row">
+        <form action="/add" method="post">
 
-    <p> {{ todo.title }} </p>
+            <div class="ui action left icon input">
+                <input type="text" name="title" placeholder="Enter Todo...">
+                <button class="ui teal button" type="submit">Add</button>
+            </div>
 
-    {% if todo.complete == False %}
-    <span>Not Complete</span>
-    {% else %}
-    <span>Completed</span>
-    {% endif %}
+        </form>
+    </div>
 
-    <a href="/update/{{ todo.id }}">Update</a>
-    <a href="/delete/{{ todo.id }}">Delete</a>
+    {% for todo in todo_list%}
+    <div class="row" style="display: table">
+        {% if todo.complete == False %}
+        <a href="/update_status/{{ todo.id }}" style="color: black"> {{ todo.title }} </a>
+        {% else %}
+        <a href="/update_status/{{ todo.id }}" style="text-decoration: line-through; color: black"> {{ todo.title
+            }} </a>
+        {% endif %}
+
+        <a href="/delete/{{ todo.id }}" class="ui icon button" style="background: white">
+            <i class="trash alternate outline icon"></i>
+        </a>
+
+        <a href="/update/{{ todo.id }}" class="ui icon button" style="background: white">
+            <i class="edit icon"></i>
+        </a>
+
+
+    </div>
     {% endfor %}
 
 </div>
-</div>
-
 
 </body>
 </html>
