@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Todo App</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.7/dist/semantic.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.7/dist/semantic.min.js"></script>
+
+</head>
+<body>
+
+<div class="ui centered grid">
+
+    <!--<h1 style="margin-top: 1%" class="ui center aligned header"> Todo App </h1>-->
+    <div class="row">
+        <h1 style="margin-top: 1%">Update task</h1>
+    </div>
+
+    <div class="row">
+        <form action="/update/{{todo.id}}" method="post">
+
+            <div class="ui action left icon input">
+                <input type="text" name="title" value="{{todo.title}}">
+                <button class="ui teal button" type="submit">Update</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+</body>
+</html>

@@ -19,7 +19,6 @@ def index():
 
     # Show all todos
     todo_list = Todo.query.all()
-    print(todo_list)
     return render_template('base.html', todo_list=todo_list)
 
 
@@ -51,13 +50,13 @@ def delete(todo_id):
     return redirect(url_for("index"))
 
 
-@app.route("/update/<int:todo_id>")
-def update (todo_id):
+@app.route("/update/<int:todo_id>", methods=["POST", "GET"])
+def update(todo_id):
     # Update todo
-
-    # Code to update todo title
-
-    return redirect(url_for("index"))
-
-
-
+    todo = Todo.query.filter_by(id=todo_id).first()
+    if request.method == "POST":
+        todo.title = request.form.get("title")
+        db.session.commit()
+        return redirect("/")
+    else:
+        return render_template('update.html', todo=todo)
