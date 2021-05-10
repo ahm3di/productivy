@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block head %}{% endblock %}
+{% block body %}
+<main class="ui centered grid">
+    <header class="row">
+        <h1>What do you want to do today?</h1>
+    </header>
+
+    <div class="row">
+        <form action="/add" method="post">
+
+            <div class="ui action left icon input">
+                <input type="text" name="title" placeholder="Enter Todo...">
+                <button class="ui teal button" type="submit">Add</button>
+            </div>
+
+        </form>
+    </div>
+
+    {% for todo in todo_list%}
+    <div class="row" id="todo-row">
+        {% if todo.complete == False %}
+        <a href="/update_status/{{ todo.id }}" id="incomplete-todo"> {{ todo.title }} </a>
+        {% else %}
+        <a href="/update_status/{{ todo.id }}" id="completed-todo"> {{ todo.title }} </a>
+        {% endif %}
+
+        <a href="/update/{{ todo.id }}" class="ui icon button" id="update-button">
+            <i class="edit icon"></i>
+        </a>
+
+        <a href="/delete/{{ todo.id }}" class="ui icon button" id="delete-button">
+            <i class="trash alternate outline icon"></i>
+        </a>
+
+    </div>
+    {% endfor %}
+
+</main>
+
+{% endblock %}
