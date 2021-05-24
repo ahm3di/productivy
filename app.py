@@ -59,4 +59,3 @@ def update(todo_id):
         return redirect("/")
     else:
         return render_template('update.html', todo=todo)
-

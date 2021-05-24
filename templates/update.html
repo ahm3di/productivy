@@ -7,12 +7,9 @@
     </div>
 
     <div class="row">
-        <form action="/update/{{todo.id}}" method="post">
-
-            <div class="ui action left icon input">
+        <form id="update-todo-input" class="ui action left icon input" action="/update/{{todo.id}}" method="post">
                 <input type="text" name="title" value="{{todo.title}}">
                 <button class="ui teal button" type="submit">Update</button>
-            </div>
         </form>
 
     </div>
