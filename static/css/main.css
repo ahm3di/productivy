@@ -18,3 +18,8 @@ body{
 #update-button, #delete-button{
     background: white;
 }
+
+.remember-me-checkbox{
+    float:left;
+    padding-bottom: 2%;
+}

@@ -7,10 +7,11 @@
         <h1>What do you want to do today?</h1>
     </header>
 
+    <a href="{{url_for('logout')}}">logout</a>
     <div class="row">
         <form id="todo-input" class="ui action left icon input" action="/add" method="post">
-                <input type="text" name="title" placeholder="Enter Todo...">
-                <button class="ui teal button" type="submit">Add</button>
+            <input type="text" name="title" placeholder="Enter Todo...">
+            <button class="ui teal button" type="submit">Add</button>
         </form>
     </div>
 
