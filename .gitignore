@@ -333,5 +333,5 @@ fabric.properties
 # flaskenv
 .flaskenv
 
-#idea code styles
-.idea/codeStyles
+#idea directory
+.idea
