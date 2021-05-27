@@ -2,14 +2,43 @@
 
 {% block head %}{% endblock %}
 {% block body %}
-<a href=""> Register </a>
+<div class="ui one column stackable center aligned page grid">
+    <div class="column eight wide">
+        <h1 class="ui teal header">Register an account</h1>
 
-<form action="" method="POST">
-    {{ form.hidden_tag() }}
-    {{ form.username }}
-    {{ form.password }}
-    {{ form.submit }}
-</form>
+        <form class="ui large form" action="/register" method="POST">
+            {{ form.hidden_tag() }}
+            <div class="ui segment">
+                <div class="field">
+                    <div class="ui left icon input">
+                        <i class="user icon"></i>
+                        {{ form.username(placeholder="Username")}}
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="ui left icon input">
+                        <i class="envelope icon"></i>
+                        {{ form.email(placeholder="Email address")}}
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="ui left icon input">
+                        <i class="lock icon"></i>
+                        {{ form.password(placeholder="Password")}}
+                    </div>
+                </div>
+                <div class="field">
+                    <button class="ui fluid large teal submit button"
+                            type="submit" value="submit">Sign Up</button>
+                    </div>
+                <div class="ui error message"></div>
+                </div>
+                </form>
 
-<a href="{{url_for('register')}}"> register </a>
+        <div class="ui message">
+            Already have an account? <a href="{{url_for('login')}}">Login</a>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
