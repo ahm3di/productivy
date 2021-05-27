@@ -15,7 +15,7 @@
         </form>
     </div>
 
-    {% for todo in todo_list%}
+    {% for todo in todo_list|sort(attribute='complete')%}
     <div class="row" id="todo-row">
         {% if todo.complete == False %}
         <a href="/update_status/{{ todo.id }}" id="incomplete-todo"> {{ todo.title }} </a>
