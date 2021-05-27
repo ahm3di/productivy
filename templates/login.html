@@ -3,8 +3,8 @@
 {% block head %}{% endblock %}
 {% block body %}
 
-<div class="ui two column row center aligned grid">
-    <div class="column">
+<div class="ui one column stackable center aligned page grid">
+    <div class="column eight wide">
         <h1 class="ui teal header">Sign in to your account</h1>
 
         <form class="ui large form" action="/login" method="POST">
@@ -13,7 +13,7 @@
                 <div class="field">
                     <div class="ui left icon input">
                         <i class="user icon"></i>
-                        {{ form.username(placeholder="E-mail address")}}
+                        {{ form.username(placeholder="Username/Email")}}
                     </div>
                 </div>
                 <div class="field">
@@ -36,7 +36,7 @@
                 </form>
 
         <div class="ui message">
-            New to us? <a href="#">Sign Up</a>
+            Dont have an account? <a href="{{url_for('register')}}">Sign Up</a>
         </div>
     </div>
 </div>
