@@ -4,12 +4,12 @@
 {% block body %}
 <main class="ui centered grid">
     <header class="row">
-        <h1>What do you want to do today?</h1>
+        <h1>{{project.name}}</h1>
     </header>
 
     <div class="row">
         <form id="todo-input" class="ui action left icon input"
-              action="/add_todo/{{project_id}}" method="post">
+              action="/add_todo/{{project.id}}" method="post">
 
             <input type="text" name="title" placeholder="Enter Todo...">
             <button class="ui teal button" type="submit">Add</button>
@@ -19,16 +19,16 @@
     {% for todo in todo_list|sort(attribute='complete')%}
     <div class="row" id="todo-row">
         {% if todo.complete == False %}
-        <a href="/update_status/{{ todo.id }}" id="incomplete-todo"> {{ todo.title }} </a>
+        <a href="/update_todo_status/{{ project.id }}/{{ todo.id }}" id="incomplete-todo"> {{ todo.title }} </a>
         {% else %}
-        <a href="/update_status/{{ todo.id }}" id="completed-todo"> {{ todo.title }} </a>
+        <a href="/update_todo_status/{{ project.id }}/{{ todo.id }}" id="completed-todo"> {{ todo.title }} </a>
         {% endif %}
 
-        <a href="/update/{{ todo.id }}" class="ui icon button" id="update-button">
+        <a href="/update_todo/{{ project.id }}/{{ todo.id }}" class="ui icon button" id="update-button">
             <i class="edit icon"></i>
         </a>
 
-        <a href="/delete/{{ todo.id }}" class="ui icon button" id="delete-button">
+        <a href="/delete_todo/{{ project.id }}/{{ todo.id }}" class="ui icon button" id="delete-button">
             <i class="trash alternate outline icon"></i>
         </a>
 

@@ -3,9 +3,6 @@
 {% block head %}{% endblock %}
 {% block body %}
 <main class="ui centered grid">
-    <header class="row">
-        <h1>What do you want to do today?</h1>
-    </header>
 
     <a href="{{url_for('logout')}}">logout</a>
 
@@ -19,9 +16,24 @@
     <div class="row">
         <h2> Your Projects: </h2>
     </div>
+
     {% for project in projects %}
+        <div class="ui card">
+  <div class="content">
+    <i class="right floated edit icon"></i>
+    <i class="right floated trash icon"></i>
+    <div class="header float right">{{ project.name }}</div>
+    <div class="description">
+      <i class="tasks icon"></i>
+    numberof Todos
+    </div>
+  </div>
+          <div class="extra content">
+
+  </div>
+</div>
     <div class="row">
-    <a href="/project/{{ project.id }}"> {{ project.name }} </a>-->
+    <a href="/project/{{ project.id }}"> {{ project.name }} </a>
         </div>
     {% endfor %}
 

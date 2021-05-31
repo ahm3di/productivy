@@ -93,7 +93,6 @@ class Project(db.Model):
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-
     # Register user
     form = RegisterForm()
     if form.validate_on_submit():
@@ -145,12 +144,12 @@ def index():
 def project(project_id):
     # Show all todos from project
     todo_list = Todo.query.filter_by(project_id=project_id).all()
-    print(todo_list)
-    return render_template('project.html', project_id=project_id,
+    current_project = Project.query.filter_by(id=project_id).first()
+    return render_template('project.html', project=current_project,
                            todo_list=todo_list)
 
 
-@app.route("/add_project/", methods=["POST"])
+@app.route("/add_project", methods=["POST"])
 @login_required
 def add_project():
     # Add new Project
@@ -172,38 +171,39 @@ def add_todo(project_id):
     current_project.todos.append(new_todo)
     db.session.add(new_todo)
     db.session.commit()
-    return redirect(url_for("index"))
+    return redirect(url_for("project", project_id=current_project.id))
 
 
-@app.route("/update_status/<int:todo_id>")
+@app.route("/update_todo_status/<int:project_id>/<int:todo_id>")
 @login_required
-def update_status(todo_id):
+def update_todo_status(project_id, todo_id):
     # Update todo status
     todo = Todo.query.filter_by(id=todo_id).first()
     todo.complete = not todo.complete
     db.session.commit()
-    return redirect(url_for("index"))
+    return redirect(url_for("project", project_id=project_id))
 
 
-@app.route("/delete/<int:todo_id>")
+@app.route("/delete_todo/<int:project_id>/<int:todo_id>")
 @login_required
-def delete(todo_id):
+def delete_todo(project_id, todo_id):
     # Delete todo
     todo = Todo.query.filter_by(id=todo_id).first()
     db.session.delete(todo)
     db.session.commit()
-    return redirect(url_for("index"))
+    return redirect(url_for("project", project_id=project_id))
 
 
-@app.route("/update/<int:todo_id>", methods=["POST", "GET"])
+@app.route("/update_todo/<int:project_id>/<int:todo_id>",
+           methods=["POST", "GET"])
 @login_required
-def update(todo_id):
+def update_todo(project_id, todo_id):
     # Update todo
     todo = Todo.query.filter_by(id=todo_id).first()
 
     if request.method == "POST":
         todo.title = request.form.get("title")
         db.session.commit()
-        return redirect("/")
+        return redirect(url_for("project", project_id=project_id))
     else:
-        return render_template('update.html', todo=todo)
+        return render_template('update.html', project_id=project_id, todo=todo)
