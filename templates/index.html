@@ -8,30 +8,21 @@
     </header>
 
     <a href="{{url_for('logout')}}">logout</a>
-    <div class="row">
-        <form id="todo-input" class="ui action left icon input" action="/add" method="post">
-            <input type="text" name="title" placeholder="Enter Todo...">
+
+        <div class="row">
+        <form id="list-input" class="ui action left icon input" action="/add_project" method="post">
+            <input type="text" name="name" placeholder="Add new project...">
             <button class="ui teal button" type="submit">Add</button>
         </form>
+        </div>
+
+    <div class="row">
+        <h2> Your Projects: </h2>
     </div>
-
-    {% for todo in todo_list|sort(attribute='complete')%}
-    <div class="row" id="todo-row">
-        {% if todo.complete == False %}
-        <a href="/update_status/{{ todo.id }}" id="incomplete-todo"> {{ todo.title }} </a>
-        {% else %}
-        <a href="/update_status/{{ todo.id }}" id="completed-todo"> {{ todo.title }} </a>
-        {% endif %}
-
-        <a href="/update/{{ todo.id }}" class="ui icon button" id="update-button">
-            <i class="edit icon"></i>
-        </a>
-
-        <a href="/delete/{{ todo.id }}" class="ui icon button" id="delete-button">
-            <i class="trash alternate outline icon"></i>
-        </a>
-
-    </div>
+    {% for project in projects %}
+    <div class="row">
+    <a href="/project/{{ project.id }}"> {{ project.name }} </a>-->
+        </div>
     {% endfor %}
 
 </main>
