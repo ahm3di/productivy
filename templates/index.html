@@ -4,38 +4,66 @@
 {% block body %}
 <main class="ui centered grid">
 
+
     <a href="{{url_for('logout')}}">logout</a>
 
-        <div class="row">
-        <form id="list-input" class="ui action left icon input" action="/add_project" method="post">
-            <input type="text" name="name" placeholder="Add new project...">
+    <div class="row">
+        <form id="project-input" class="ui action left icon input"
+              action="/add_project" method="post">
+            <input type="text" name="name" placeholder="Add new project..."
+                   maxlength="60">
             <button class="ui teal button" type="submit">Add</button>
         </form>
-        </div>
+    </div>
 
     <div class="row">
         <h2> Your Projects: </h2>
     </div>
+    <div class="row ui cards">
+        {% for project in projects %}
 
-    {% for project in projects %}
-        <div class="ui card">
-  <div class="content">
-    <i class="right floated edit icon"></i>
-    <i class="right floated trash icon"></i>
-    <div class="header float right">{{ project.name }}</div>
-    <div class="description">
-      <i class="tasks icon"></i>
-    numberof Todos
+        <a class="card" href="/project/{{ project.id }}"/>
+
+            <div class="content">
+                <div class="left floated header">{{ project.name }}</div>
+                <div class="right floated meta" id="project-members">
+                    <i class="left floated users icon"></i>
+                    <div class="column">
+                        {{project.users | list | count}} Member(s)
+                    </div>
+                </div>
+            </div>
+
+            <div class="content ui grid">
+                    <div class=" card-incomplete">
+                        <i class="times icon"></i>Incomplete tasks:
+                        {{project.todos |selectattr("complete","equalto",False)|
+                        list | count}}
+                    </div>
+
+                    <div class="card-complete">
+                        <i class="check icon"></i>
+                        Completed tasks:
+                        {{project.todos |selectattr("complete")|
+                        list | count}}
+                    </div>
+
+                    <div class="card-total">
+                        <i class="plus icon"></i>
+                        Total tasks:
+                        {{project.todos | list | count}}
+                    </div>
+                </div>
+
+            <div class="extra content">
+                {{ project.last_update.strftime('%d-%m-%y %H:%M')}}
+                <div class="right floated author">
+                    <img class="ui avatar iamge"> Author name
+                </div>
+            </div>
+
+        {% endfor %}
     </div>
-  </div>
-          <div class="extra content">
-
-  </div>
-</div>
-    <div class="row">
-    <a href="/project/{{ project.id }}"> {{ project.name }} </a>
-        </div>
-    {% endfor %}
 
 </main>
 

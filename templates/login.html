@@ -3,11 +3,12 @@
 {% block head %}{% endblock %}
 {% block body %}
 
-<div class="ui one column stackable center aligned page grid">
+<div class="ui center aligned page grid">
     <div class="column eight wide">
         <h1 class="ui teal header">Sign in to your account</h1>
 
-        <form class="ui large form" action="/login" method="POST">
+        <form id="login-form"
+              class="ui large form" action="/login" method="POST">
             {{ form.hidden_tag() }}
             <div class="ui segment">
                 <div class="field">

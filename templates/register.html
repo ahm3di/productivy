@@ -6,25 +6,29 @@
     <div class="column eight wide">
         <h1 class="ui teal header">Register an account</h1>
 
-        <form class="ui large form" action="/register" method="POST">
+        <form id=register-form
+              class="ui large form" action="/register" method="POST">
             {{ form.hidden_tag() }}
             <div class="ui segment">
                 <div class="field">
                     <div class="ui left icon input">
                         <i class="user icon"></i>
-                        {{ form.username(placeholder="Username")}}
+                        {{ form.username(placeholder="Username",
+                        maxlength="20")}}
                     </div>
                 </div>
                 <div class="field">
                     <div class="ui left icon input">
                         <i class="envelope icon"></i>
-                        {{ form.email(placeholder="Email address")}}
+                        {{ form.email(placeholder="Email address",
+                        maxlength="50")}}
                     </div>
                 </div>
                 <div class="field">
                     <div class="ui left icon input">
                         <i class="lock icon"></i>
-                        {{ form.password(placeholder="Password")}}
+                        {{ form.password(placeholder="Password",
+                        maxlength="20")}}
                     </div>
                 </div>
                 <div class="field">

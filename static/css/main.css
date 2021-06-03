@@ -1,25 +1,55 @@
-body{
+body {
     margin-top: 5%;
 }
 
-#todo-row{
+#todo-row {
     display: table;
 }
 
-#incomplete-todo, #completed-todo{
+#incomplete-todo, #completed-todo {
     color: black;
 }
 
-#completed-todo{
+#completed-todo {
     text-decoration: line-through;
 
 }
 
-#update-button, #delete-button{
+#update-button, #delete-button {
     background: white;
 }
 
-.remember-me-checkbox{
-    float:left;
+.remember-me-checkbox {
+    float: left;
     padding-bottom: 2%;
+}
+
+#project-members {
+    display: flex;
+    align-items: center;
+}
+
+.card-complete,.card-incomplete,.card-total{
+    display:flex;
+    align-items: center;
+}
+
+.card-incomplete{
+    color: darkred;
+    margin-left:auto;
+    margin-right:auto;
+   display:block;
+}
+
+.card-complete{
+    color: darkgreen;
+    margin-left:auto;
+    margin-right:auto;
+    display:block;
+}
+
+.card-total{
+    color: dodgerblue;
+    margin-left:auto;
+    margin-right:auto;
 }

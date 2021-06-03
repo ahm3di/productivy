@@ -1,13 +1,14 @@
 $(function () {
 
-    //Form validation to prevent empty todos
-    $('#todo-input, #update-todo-input').form({
+    //Form validation to prevent empty project and todo names
+    $('#todo-input, #update-todo-input, #project-input, #update-project-input').form({
         fields: {
             title: 'empty',
+            name: 'empty'
         },
     });
 
-    $('.ui.form')
+    $('#register-form, #login-form')
         .form({
             fields: {
                 username: {

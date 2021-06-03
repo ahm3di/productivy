@@ -6,6 +6,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField
 from wtforms.validators import InputRequired, Length, ValidationError, Email
 from flask_bcrypt import Bcrypt
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
@@ -73,21 +74,22 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(20), nullable=False, unique=True)
     email = db.Column(db.String(50), nullable=False, unique=True)
     password = db.Column(db.String(80), nullable=False)
-    Projects = db.relationship('Project', secondary=user_project,
+    projects = db.relationship('Project', secondary=user_project,
                                backref=db.backref('users'))
 
 
 class Todo(db.Model):
     # Define Todo model
     id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100), nullable=False)
+    title = db.Column(db.String(50), nullable=False)
     complete = db.Column(db.BOOLEAN)
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
 
 
 class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(20), nullable=False)
+    name = db.Column(db.String(60), nullable=False)
+    last_update = db.Column(db.DATETIME, nullable=False)
     todos = db.relationship('Todo', backref='project')
 
 
@@ -135,7 +137,6 @@ def logout():
 def index():
     # Show all projects for current user
     projects = Project.query.filter(Project.users.any(id=current_user.id)).all()
-
     return render_template('index.html', projects=projects)
 
 
@@ -152,13 +153,41 @@ def project(project_id):
 @app.route("/add_project", methods=["POST"])
 @login_required
 def add_project():
-    # Add new Project
+    # Add new project
     name = request.form.get("name")
-    new_project = Project(name=name)
-    current_user.Projects.append(new_project)
+    new_project = Project(name=name, last_update=datetime.now())
+    current_user.projects.append(new_project)
     db.session.add(new_project)
     db.session.commit()
     return redirect(url_for("index"))
+
+
+@app.route("/delete_project/<int:project_id>")
+@login_required
+def delete_project(project_id):
+    # Remove project
+    current_project = Project.query.filter_by(id=project_id).first()
+    project_todos = Todo.query.filter_by(project_id=project_id).all()
+    for todo in project_todos:
+        db.session.delete(todo)
+    db.session.delete(current_project)
+    db.session.commit()
+    return redirect(url_for("index"))
+
+
+@app.route("/update_project/<int:project_id>",
+           methods=["POST", "GET"])
+@login_required
+def update_project(project_id):
+    # Update project name
+    current_project = Project.query.filter_by(id=project_id).first()
+    if request.method == "POST":
+        current_project.name = request.form.get("name")
+        current_project.last_update = datetime.now()
+        db.session.commit()
+        return redirect(url_for("project", project_id=project_id))
+    else:
+        return render_template('update-project.html', project=current_project)
 
 
 @app.route("/add_todo/<int:project_id>", methods=["POST"])
@@ -168,6 +197,7 @@ def add_todo(project_id):
     title = request.form.get("title")
     new_todo = Todo(title=title, complete=False)
     current_project = Project.query.filter_by(id=project_id).first()
+    current_project.last_update = datetime.now()
     current_project.todos.append(new_todo)
     db.session.add(new_todo)
     db.session.commit()
@@ -180,6 +210,8 @@ def update_todo_status(project_id, todo_id):
     # Update todo status
     todo = Todo.query.filter_by(id=todo_id).first()
     todo.complete = not todo.complete
+    current_project = Project.query.filter_by(id=project_id).first()
+    current_project.last_update = datetime.now()
     db.session.commit()
     return redirect(url_for("project", project_id=project_id))
 
@@ -189,6 +221,8 @@ def update_todo_status(project_id, todo_id):
 def delete_todo(project_id, todo_id):
     # Delete todo
     todo = Todo.query.filter_by(id=todo_id).first()
+    current_project = Project.query.filter_by(id=project_id).first()
+    current_project.last_update = datetime.now()
     db.session.delete(todo)
     db.session.commit()
     return redirect(url_for("project", project_id=project_id))
@@ -203,6 +237,8 @@ def update_todo(project_id, todo_id):
 
     if request.method == "POST":
         todo.title = request.form.get("title")
+        current_project = Project.query.filter_by(id=project_id).first()
+        current_project.last_update = datetime.now()
         db.session.commit()
         return redirect(url_for("project", project_id=project_id))
     else:
