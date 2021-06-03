@@ -25,6 +25,18 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
+def check_user_access(project_id):
+    # Validate user access to a project to prevent users from altering
+    # data they shouldn't have access to
+    current_project = Project.query.filter_by(id=project_id).first()
+    if not current_project:
+        raise ValidationError("Project doesn't exist (maybe a")
+    if current_project in current_user.projects:
+        return current_project
+    else:
+        raise ValidationError("You don't have access to this")
+
+
 def validate_user(username, email):
     # Check to see if username or email already exists
     existing_username = User.query.filter_by(
@@ -144,8 +156,8 @@ def index():
 @login_required
 def project(project_id):
     # Show all todos from project
+    current_project = check_user_access(project_id)
     todo_list = Todo.query.filter_by(project_id=project_id).all()
-    current_project = Project.query.filter_by(id=project_id).first()
     return render_template('project.html', project=current_project,
                            todo_list=todo_list)
 
@@ -166,7 +178,7 @@ def add_project():
 @login_required
 def delete_project(project_id):
     # Remove project
-    current_project = Project.query.filter_by(id=project_id).first()
+    current_project = check_user_access(project_id)
     project_todos = Todo.query.filter_by(project_id=project_id).all()
     for todo in project_todos:
         db.session.delete(todo)
@@ -180,7 +192,7 @@ def delete_project(project_id):
 @login_required
 def update_project(project_id):
     # Update project name
-    current_project = Project.query.filter_by(id=project_id).first()
+    current_project = check_user_access(project_id)
     if request.method == "POST":
         current_project.name = request.form.get("name")
         current_project.last_update = datetime.now()
@@ -190,13 +202,31 @@ def update_project(project_id):
         return render_template('update-project.html', project=current_project)
 
 
+@app.route("/add_user/<int:project_id>", methods=["POST", "GET"])
+@login_required
+def add_user(project_id):
+    # Add user to project
+    current_project = check_user_access(project_id)
+    if request.method == "POST":
+        new_user = User.query.filter_by(email=request.form.get("name")).first()
+        if not new_user:
+            new_user = User.query.filter_by(username=request.form.get("name"))\
+                .first()
+        new_user.projects.append(current_project)
+        db.session.commit()
+        return redirect(url_for("project", project_id=project_id))
+
+    else:
+        return render_template('add-user.html', project_id=project_id)
+
+
 @app.route("/add_todo/<int:project_id>", methods=["POST"])
 @login_required
 def add_todo(project_id):
     # Add new todo
+    current_project = check_user_access(project_id)
     title = request.form.get("title")
     new_todo = Todo(title=title, complete=False)
-    current_project = Project.query.filter_by(id=project_id).first()
     current_project.last_update = datetime.now()
     current_project.todos.append(new_todo)
     db.session.add(new_todo)
@@ -208,9 +238,9 @@ def add_todo(project_id):
 @login_required
 def update_todo_status(project_id, todo_id):
     # Update todo status
+    current_project = check_user_access(project_id)
     todo = Todo.query.filter_by(id=todo_id).first()
     todo.complete = not todo.complete
-    current_project = Project.query.filter_by(id=project_id).first()
     current_project.last_update = datetime.now()
     db.session.commit()
     return redirect(url_for("project", project_id=project_id))
@@ -220,8 +250,8 @@ def update_todo_status(project_id, todo_id):
 @login_required
 def delete_todo(project_id, todo_id):
     # Delete todo
+    current_project = check_user_access(project_id)
     todo = Todo.query.filter_by(id=todo_id).first()
-    current_project = Project.query.filter_by(id=project_id).first()
     current_project.last_update = datetime.now()
     db.session.delete(todo)
     db.session.commit()
@@ -233,13 +263,13 @@ def delete_todo(project_id, todo_id):
 @login_required
 def update_todo(project_id, todo_id):
     # Update todo
+    current_project = check_user_access(project_id)
     todo = Todo.query.filter_by(id=todo_id).first()
 
     if request.method == "POST":
         todo.title = request.form.get("title")
-        current_project = Project.query.filter_by(id=project_id).first()
         current_project.last_update = datetime.now()
         db.session.commit()
         return redirect(url_for("project", project_id=project_id))
     else:
-        return render_template('update.html', project_id=project_id, todo=todo)
+        return render_template('update-todo.html', project_id=project_id, todo=todo)

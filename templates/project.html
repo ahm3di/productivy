@@ -17,7 +17,7 @@
         <i class="trash alternate icon"></i>
     </a>
 
-        <a href="/"
+        <a href="/add_user/{{ project.id }}"
        class="ui icon button">
         <i class="share alternate icon"></i>
     </a>
@@ -31,6 +31,8 @@
             <button class="ui teal button" type="submit">Add</button>
         </form>
     </div>
+
+    <a href="{{url_for('index')}}">Return to home</a>
 
     {% for todo in todo_list|sort(attribute='complete')%}
     <div class="row" id="todo-row">
@@ -51,11 +53,8 @@
            class="ui icon button" id="delete-button">
             <i class="trash alternate outline icon"></i>
         </a>
-
     </div>
     {% endfor %}
-
-
 </main>
 
 {% endblock %}
