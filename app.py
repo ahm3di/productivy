@@ -1,4 +1,4 @@
-﻿from flask import Flask, render_template, request, redirect, url_for
+﻿from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, \
     logout_user, current_user
@@ -35,18 +35,6 @@ def check_user_access(project_id):
         return current_project
     else:
         raise ValidationError("You don't have access to this")
-
-
-def validate_user(username, email):
-    # Check to see if username or email already exists
-    existing_username = User.query.filter_by(
-        username=username).first()
-
-    existing_email = User.query.filter_by(
-        email=email).first()
-
-    if existing_email or existing_username:
-        raise ValidationError("User already exists")
 
 
 class RegisterForm(FlaskForm):
@@ -105,12 +93,31 @@ class Project(db.Model):
     todos = db.relationship('Todo', backref='project')
 
 
+@app.route('/validate_user', methods=["POST"])
+def validate_user():
+    # Check to see if username or email exists in database
+    existing_username = User.query.filter_by(
+        username=request.form.get("username")).first()
+
+    existing_email = User.query.filter_by(
+        email=request.form.get("email")).first()
+
+    if existing_username:
+        return jsonify("0")
+    elif existing_email:
+        return jsonify("1")
+    else:
+        return jsonify("2")
+
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     # Register user
+    if current_user.is_authenticated:
+        return redirect(url_for('/'))
+
     form = RegisterForm()
     if form.validate_on_submit():
-        validate_user(form.username.data, form.email.data)
         hashed_password = bcrypt.generate_password_hash(form.password.data)
         new_user = User(username=form.username.data,
                         email=form.email.data, password=hashed_password)
@@ -123,6 +130,9 @@ def register():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     # Login user
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.username.data).first()
@@ -210,7 +220,7 @@ def add_user(project_id):
     if request.method == "POST":
         new_user = User.query.filter_by(email=request.form.get("name")).first()
         if not new_user:
-            new_user = User.query.filter_by(username=request.form.get("name"))\
+            new_user = User.query.filter_by(username=request.form.get("name")) \
                 .first()
         new_user.projects.append(current_project)
         db.session.commit()
@@ -272,4 +282,5 @@ def update_todo(project_id, todo_id):
         db.session.commit()
         return redirect(url_for("project", project_id=project_id))
     else:
-        return render_template('update-todo.html', project_id=project_id, todo=todo)
+        return render_template('update-todo.html', project_id=project_id,
+                               todo=todo)
