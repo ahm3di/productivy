@@ -30,7 +30,7 @@ def check_user_access(project_id):
     # data they shouldn't have access to
     current_project = Project.query.filter_by(id=project_id).first()
     if not current_project:
-        raise ValidationError("Project doesn't exist (maybe a")
+        raise ValidationError("Project doesn't exist")
     if current_project in current_user.projects:
         return current_project
     else:
@@ -126,8 +126,8 @@ def register():
     form = RegisterForm()
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data)
-        new_user = User(username=form.username.data,
-                        email=form.email.data, password=hashed_password)
+        new_user = User(username=form.username.data.lower(),
+                        email=form.email.data.lower(), password=hashed_password)
         db.session.add(new_user)
         db.session.commit()
         return redirect(url_for('login'))
@@ -142,9 +142,10 @@ def login():
 
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.username.data).first()
+        user = User.query.filter_by(email=form.username.data.lower()).first()
         if not user:
-            user = User.query.filter_by(username=form.username.data).first()
+            user = User.query.filter_by(username=form.username.data.lower()).\
+                first()
 
         if user:
             if bcrypt.check_password_hash(user.password, form.password.data):

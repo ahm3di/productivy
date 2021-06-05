@@ -12,11 +12,17 @@ body {
 
 #completed-todo {
     text-decoration: line-through;
-
 }
 
-#update-button, #delete-button {
+
+#update-button {
     background: white;
+    color:steelblue;
+}
+
+#delete-button {
+    background: white;
+    color:red
 }
 
 .remember-me-checkbox {
@@ -38,7 +44,7 @@ body {
     color: darkred;
     margin-left:auto;
     margin-right:auto;
-   display:block;
+    display:block;
 }
 
 .card-complete{
@@ -52,4 +58,8 @@ body {
     color: dodgerblue;
     margin-left:auto;
     margin-right:auto;
+}
+
+#project-settings{
+    background-color: white;
 }

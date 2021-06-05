@@ -145,4 +145,11 @@ $(function () {
                 }
             }
         });
+
+    $('.button')
+        .popup();
+
+    $('.ui.dropdown')
+        .dropdown();
+
 });
