@@ -24,43 +24,46 @@
 
         <a class="card" href="/project/{{ project.id }}"/>
 
-            <div class="content">
-                <div class="left floated header">{{ project.name }}</div>
-                <div class="right floated meta" id="project-members">
-                    <i class="left floated users icon"></i>
-                    <div class="column">
-                        {{project.users | list | count}} Member(s)
-                    </div>
+        <div class="content">
+            <div class="left floated header">{{ project.name }}</div>
+            <div class="right floated meta" id="project-members">
+                <i class="left floated users icon"></i>
+                <div class="column">
+                    {{project.users | list | count}} Member(s)
                 </div>
             </div>
+        </div>
 
-            <div class="content ui grid">
-                    <div class=" card-incomplete">
-                        <i class="times icon"></i>Incomplete tasks:
-                        {{project.todos |selectattr("complete","equalto",False)|
-                        list | count}}
-                    </div>
+        <div class="content ui grid">
+            <div class=" card-incomplete">
+                <i class="times icon"></i>Incomplete tasks:
+                {{project.todos |selectattr("complete","equalto",False)|
+                list | count}}
+            </div>
 
-                    <div class="card-complete">
-                        <i class="check icon"></i>
-                        Completed tasks:
-                        {{project.todos |selectattr("complete")|
-                        list | count}}
-                    </div>
+            <div class="card-complete">
+                <i class="check icon"></i>
+                Completed tasks:
+                {{project.todos |selectattr("complete")|
+                list | count}}
+            </div>
 
-                    <div class="card-total">
-                        <i class="plus icon"></i>
-                        Total tasks:
-                        {{project.todos | list | count}}
-                    </div>
-                </div>
+            <div class="card-total">
+                <i class="plus icon"></i>
+                Total tasks:
+                {{project.todos | list | count}}
+            </div>
+        </div>
 
-            <div class="extra content">
+        <div class="extra content">
+            <div class="left floated">
                 {{ project.last_update.strftime('%d-%m-%y %H:%M')}}
-                <div class="right floated author">
-                    <img class="ui avatar iamge"> Author name
-                </div>
             </div>
+            <div class="right floated author">
+                <img class="ui avatar image">{{users| selectattr("id",
+                "equalto", project.last_user) | first | attr("username") }}
+            </div>
+        </div>
 
         {% endfor %}
     </div>
