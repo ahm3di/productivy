@@ -25,16 +25,18 @@
                 </div>
                 <div class="field">
                     <div class="remember-me-checkbox">
-                    <div class="ui checkbox">
-                        {{ form.remember}}
-                        <label>Remember me</label>
+                        <div class="ui checkbox">
+                            {{ form.remember}}
+                            <label>Remember me</label>
                         </div>
                     </div>
-                    <button class="ui fluid large teal submit button" type="submit" value="submit">Login</button>
+                    <button class="ui fluid large teal submit button"
+                            type="submit" value="submit">Login
+                    </button>
                 </div>
                 <div class="ui error message"></div>
-                </div>
-                </form>
+            </div>
+        </form>
 
         <div class="ui message">
             Dont have an account? <a href="{{url_for('register')}}">Sign Up</a>

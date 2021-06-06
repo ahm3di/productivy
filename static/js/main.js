@@ -146,10 +146,15 @@ $(function () {
             }
         });
 
-    $('.button')
-        .popup();
+    $('.button').popup();
 
-    $('.ui.dropdown')
-        .dropdown();
+    $('.ui.dropdown').dropdown();
 
+    $('.update-project-button').on('click', function () {
+        $('#update-project-modal').modal('show');
+    });
+
+    $('.add-user-button').on('click', function () {
+        $('#add-users-modal').modal('show');
+    });
 });

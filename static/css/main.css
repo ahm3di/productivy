@@ -15,14 +15,24 @@ body {
 }
 
 
-#update-button {
+#update-todo-button {
     background: white;
     color:steelblue;
+    margin-left: 1%;
 }
 
-#delete-button {
+.delete-todo-button{
     background: white;
-    color:red
+    color:red;
+    margin-left: 1%;
+}
+
+#update-todo-button:hover{
+    color: black;
+}
+
+.delete-todo-button:hover{
+    color: black;
 }
 
 .remember-me-checkbox {
@@ -62,4 +72,11 @@ body {
 
 #project-settings{
     background-color: white;
+}
+
+.modal-form{
+    width:50%;
+}
+.modal-buttons{
+    margin-top: 1%;
 }

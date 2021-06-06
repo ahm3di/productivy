@@ -25,9 +25,12 @@
                 <i class="bars icon"></i>
                 <div class="menu">
                     <div class="header">Manage project</div>
-                    <a class="item" href="/update_project/{{ project.id }}"> <i class="edit icon"></i> Edit </a>
-                    <a class="item" href="/delete_project/{{ project.id }}"> <i class="trash icon"></i> Delete</a>
-                    <a class="item" href="/add_user/{{ project.id }}"> <i class="users icon"></i> Add users</a>
+                    <a class="item update-project-button">
+                        <i class="edit icon"></i> Edit </a>
+                    <a class="item" href="/delete_project/{{ project.id }}">
+                        <i class="trash icon"></i> Delete</a>
+                    <a class="item add-user-button">
+                        <i class="users icon"></i> Add users</a>
                 </div>
             </div>
         </h1>
@@ -43,7 +46,7 @@
         </form>
     </div>
 
-    {% for todo in todo_list|sort(attribute='complete')%}
+    {% for todo in todo_list|sort(attribute='complete') %}
     <div class="row" id="todo-row">
         {% if todo.complete == False %}
         <a href="/update_todo_status/{{ project.id }}/{{ todo.id }}"
@@ -53,17 +56,75 @@
            id="completed-todo"> {{ todo.title }} </a>
         {% endif %}
 
-        <a href="/update_todo/{{ project.id }}/{{ todo.id }}"
-           class="ui icon button" id="update-button">
+        <a class="ui icon button" id="update-todo-button"
+           href="/update_todo/{{project.id}}/{{todo.id}}">
+            <input class="current-todo" type="hidden" name="{{todo}}">
             <i class="edit icon"></i>
         </a>
 
         <a href="/delete_todo/{{ project.id }}/{{ todo.id }}"
-           class="ui icon button" id="delete-button">
+           class="ui icon delete-todo-button">
             <i class="trash alternate outline icon"></i>
         </a>
     </div>
     {% endfor %}
 </main>
 
+<div class="ui basic large modal top aligned" id="update-project-modal">
+    <div class="ui icon header">
+        <i class="edit icon"></i>
+        Update project
+    </div>
+
+    <div class="ui centered grid">
+        <form class="ui form modal-form"
+              action="/update_project/{{project.id}}" method="post">
+
+            <input type="text" name="name" value="{{project.name}}">
+
+            <div class="row modal-buttons">
+                <button class="ui green ok inverted submit button"
+                        type="submit"><i class="checkmark icon"></i>Update
+                </button>
+
+                <a class="ui red basic cancel inverted button"
+                   href="/project/{{project.id}}">
+                    <i class="remove icon"></i>Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="ui basic large modal top aligned" id="add-users-modal">
+    <div class="ui icon header">
+        <i class="user icon"></i>
+        Add users
+    </div>
+
+    <div class="ui centered grid">
+        <form class="ui form modal-form"
+              action="/add_user/{{project.id}}" method="post">
+
+            <input type="text" name="name" placeholder="Enter Username/Email">
+
+            <div class="row modal-buttons">
+                <button class="ui green ok inverted submit button"
+                        type="submit"><i class="checkmark icon"></i>Add
+                </button>
+
+                <a class="ui red basic cancel inverted button"
+                   href="/project/{{project.id}}">
+                    <i class="remove icon"></i>Cancel
+                </a>
+            </div>
+        </form>
+        {%for user in users%}
+        <div class="row">
+            {{user.username}}
+        </div>
+        {%endfor%}
+    </div>
+</div>
 {% endblock %}
+

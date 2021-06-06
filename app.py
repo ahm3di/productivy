@@ -144,7 +144,7 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.username.data.lower()).first()
         if not user:
-            user = User.query.filter_by(username=form.username.data.lower()).\
+            user = User.query.filter_by(username=form.username.data.lower()). \
                 first()
 
         if user:
@@ -177,8 +177,9 @@ def project(project_id):
     # Show all todos from project
     current_project = check_user_access(project_id)
     todo_list = Todo.query.filter_by(project_id=project_id).all()
+    project_users = User.query.filter(User.projects.any(id=project_id)).all()
     return render_template('project.html', project=current_project,
-                           todo_list=todo_list)
+                           todo_list=todo_list, users=project_users)
 
 
 @app.route("/add_project", methods=["POST"])
@@ -218,8 +219,6 @@ def update_project(project_id):
         update_project_details(current_project)
         db.session.commit()
         return redirect(url_for("project", project_id=project_id))
-    else:
-        return render_template('update-project.html', project=current_project)
 
 
 @app.route("/add_user/<int:project_id>", methods=["POST", "GET"])
