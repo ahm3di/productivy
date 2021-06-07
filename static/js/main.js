@@ -47,12 +47,13 @@ $(function () {
 
 
 //Form validation to prevent empty project and todo names
-    $('#todo-input, #update-todo-input, #project-input, #update-project-input').form({
-        fields: {
-            title: 'empty',
-            name: 'empty'
-        },
-    });
+    $('#todo-input, #update-todo-form, #project-input, #update-project-input')
+        .form({
+            fields: {
+                title: 'empty',
+                name: 'empty'
+            },
+        });
 
     $('#register-form, #login-form')
         .form({
@@ -156,5 +157,24 @@ $(function () {
 
     $('.add-user-button').on('click', function () {
         $('#add-users-modal').modal('show');
+    });
+
+    $('.update-todo-button').on('click', function () {
+        // Get todo title and id from hidden fields
+        var current_todo_id = $('.current-todo-id').val();
+        var current_todo_title = $('.current-todo-title').val();
+
+        // Set modal input placeholder to todo title
+        $('#update-todo-modal #update-todo-input').val(current_todo_title)
+
+        // Get form action url
+        var action = $('#update-todo-modal #update-todo-form').attr("action");
+
+        // Append todo title to form action url
+        $('#update-todo-modal #update-todo-form').attr('action',
+            action + current_todo_id);
+
+        //Display modal
+        $('#update-todo-modal').modal('show')
     });
 });

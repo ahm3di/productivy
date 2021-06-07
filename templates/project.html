@@ -56,9 +56,9 @@
            id="completed-todo"> {{ todo.title }} </a>
         {% endif %}
 
-        <a class="ui icon button" id="update-todo-button"
-           href="/update_todo/{{project.id}}/{{todo.id}}">
-            <input class="current-todo" type="hidden" name="{{todo}}">
+        <input class="current-todo-id" type="hidden" value="{{todo.id}}">
+        <input class="current-todo-title" type="hidden" value="{{todo.title}}">
+        <a class="ui icon update-todo-button">
             <i class="edit icon"></i>
         </a>
 
@@ -77,7 +77,7 @@
     </div>
 
     <div class="ui centered grid">
-        <form class="ui form modal-form"
+        <form class="ui form modal-form" id="update-project-input"
               action="/update_project/{{project.id}}" method="post">
 
             <input type="text" name="name" value="{{project.name}}">
@@ -126,5 +126,30 @@
         {%endfor%}
     </div>
 </div>
-{% endblock %}
 
+<div class="ui basic large modal top aligned" id="update-todo-modal">
+    <div class="ui icon header">
+        <i class="user icon"></i>
+        Update task
+    </div>
+
+    <div class="ui centered grid">
+        <form id=update-todo-form class="ui form modal-form"
+              action="/update_todo/{{project.id}}/" method="post">
+
+            <input id="update-todo-input" type="text" name="title">
+
+            <div class="row modal-buttons">
+                <button class="ui green ok inverted submit button"
+                        type="submit"><i class="checkmark icon"></i>Update
+                </button>
+
+                <a class="ui red basic cancel inverted button"
+                   href="/project/{{project.id}}">
+                    <i class="remove icon"></i>Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

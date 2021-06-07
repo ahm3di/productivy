@@ -235,9 +235,6 @@ def add_user(project_id):
         db.session.commit()
         return redirect(url_for("project", project_id=project_id))
 
-    else:
-        return render_template('add-user.html', project_id=project_id)
-
 
 @app.route("/add_todo/<int:project_id>", methods=["POST"])
 @login_required
@@ -290,6 +287,3 @@ def update_todo(project_id, todo_id):
         update_project_details(current_project)
         db.session.commit()
         return redirect(url_for("project", project_id=project_id))
-    else:
-        return render_template('update-todo.html', project_id=project_id,
-                               todo=todo)

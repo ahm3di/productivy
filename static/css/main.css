@@ -14,24 +14,24 @@ body {
     text-decoration: line-through;
 }
 
-
-#update-todo-button {
+.update-todo-button {
     background: white;
-    color:steelblue;
+    color: steelblue;
+    margin-left: 1%;
+    cursor: pointer;
+}
+
+.delete-todo-button {
+    background: white;
+    color: red;
     margin-left: 1%;
 }
 
-.delete-todo-button{
-    background: white;
-    color:red;
-    margin-left: 1%;
-}
-
-#update-todo-button:hover{
+.update-todo-button:hover {
     color: black;
 }
 
-.delete-todo-button:hover{
+.delete-todo-button:hover {
     color: black;
 }
 
@@ -45,38 +45,39 @@ body {
     align-items: center;
 }
 
-.card-complete,.card-incomplete,.card-total{
-    display:flex;
+.card-complete, .card-incomplete, .card-total {
+    display: flex;
     align-items: center;
 }
 
-.card-incomplete{
+.card-incomplete {
     color: darkred;
-    margin-left:auto;
-    margin-right:auto;
-    display:block;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
 }
 
-.card-complete{
+.card-complete {
     color: darkgreen;
-    margin-left:auto;
-    margin-right:auto;
-    display:block;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
 }
 
-.card-total{
+.card-total {
     color: dodgerblue;
-    margin-left:auto;
-    margin-right:auto;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-#project-settings{
+#project-settings {
     background-color: white;
 }
 
-.modal-form{
-    width:50%;
+.modal-form {
+    width: 50%;
 }
-.modal-buttons{
+
+.modal-buttons {
     margin-top: 1%;
 }
