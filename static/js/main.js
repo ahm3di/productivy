@@ -1,53 +1,36 @@
 $(function () {
     // Custom fomantic rule to check if username is already registered
-    $.fn.form.settings.rules.checkUsername = function (value) {
-        let res = true
+    $.fn.form.settings.rules.checkUser = function (value, formIdentifier) {
+        let result = true
         $.ajax({
             url: '/validate_user',
             type: "POST",
             async: false,
             data: {
-                username: value
+                entry: value
             },
             dataType: 'json',
             success: function (data) {
                 console.log(data);
-                if (data == "0") {
-                    res = false;
+                // If username or email exist in database and error is displayed
+                if (data == "0" && formIdentifier == "username") {
+                    result = false;
+                } else if (data == "1" && formIdentifier == "email") {
+                    result = false;
+                }
+                // Error displayed if username or email don't exist
+                else if (data == "2" && formIdentifier == "userEmail") {
+                    result = false;
                 } else {
-                    res = true;
+                    result = true;
                 }
             }
         });
-        return res;
+        return result;
     };
 
-    // Custom fomantic rule to check if email is already registered
-    $.fn.form.settings.rules.checkEmail = function (value) {
-        let res = true
-        $.ajax({
-            url: '/validate_user',
-            type: "POST",
-            async: false,
-            data: {
-                email: value
-            },
-            dataType: 'json',
-            success: function (data) {
-                console.log(data);
-                if (data == "1") {
-                    res = false;
-                } else {
-                    res = true;
-                }
-            }
-        });
-        return res;
-    };
-
-
-//Form validation to prevent empty project and todo names
-    $('#todo-input, #update-todo-form, #project-input, #update-project-input')
+    // Form validation to prevent empty project and todo names
+    $('#todo-form, #update-todo-form, #update-project-form')
         .form({
             fields: {
                 title: 'empty',
@@ -55,7 +38,8 @@ $(function () {
             },
         });
 
-    $('#register-form, #login-form')
+    // Form validation for register form
+    $('#register-form')
         .form({
             fields: {
                 username: {
@@ -63,12 +47,14 @@ $(function () {
                     rules: [
                         {
                             type: 'empty',
-                            prompt: 'Please enter your username',
-
+                            prompt: 'Please enter a username',
+                        },
+                        {
                             type: 'length[3]',
                             prompt: 'Your username must be at least 3 characters',
-
-                            type: 'checkUsername',
+                        },
+                        {
+                            type: 'checkUser[username]',
                             prompt: 'Username already exists'
                         }
                     ]
@@ -79,11 +65,13 @@ $(function () {
                         {
                             type: 'empty',
                             prompt: 'Please enter your email',
-
+                        },
+                        {
                             type: 'email',
                             prompt: 'Please enter a valid email address',
-
-                            type: 'checkEmail',
+                        },
+                        {
+                            type: 'checkUser[email]',
                             prompt: 'Email already exists'
                         }
                     ]
@@ -104,6 +92,7 @@ $(function () {
             }
         });
 
+    // Form validation for login form
     $('#login-form')
         .form({
             fields: {
@@ -125,7 +114,8 @@ $(function () {
                         {
                             type: 'empty',
                             prompt: 'Please enter your email',
-
+                        },
+                        {
                             type: 'email',
                             prompt: 'Please enter a valid email address',
                         }
@@ -146,6 +136,23 @@ $(function () {
                 }
             }
         });
+
+    // Form validation to prevent empty project and todo names
+    $('#add-users-form')
+        .form({
+            fields: {
+                name: {
+                    identifier: 'name',
+                    rules: [
+                        {
+                            type: 'checkUser[userEmail]',
+                            prompt: "Please enter a valid username/email"
+                        },
+                    ]
+                }
+            },
+        });
+
 
     $('.button').popup();
 

@@ -37,7 +37,7 @@
     </header>
 
     <div class="row">
-        <form id="todo-input" class="ui action left icon input"
+        <form id="todo-form" class="ui action left icon input"
               action="/add_todo/{{project.id}}" method="post">
 
             <input type="text" name="title" placeholder="Enter Todo..."
@@ -70,6 +70,7 @@
     {% endfor %}
 </main>
 
+<!-- Update project modal -->
 <div class="ui basic large modal top aligned" id="update-project-modal">
     <div class="ui icon header">
         <i class="edit icon"></i>
@@ -77,7 +78,7 @@
     </div>
 
     <div class="ui centered grid">
-        <form class="ui form modal-form" id="update-project-input"
+        <form class="ui form modal-form" id="update-project-form"
               action="/update_project/{{project.id}}" method="post">
 
             <input type="text" name="name" value="{{project.name}}">
@@ -96,6 +97,7 @@
     </div>
 </div>
 
+<!-- Add users modal -->
 <div class="ui basic large modal top aligned" id="add-users-modal">
     <div class="ui icon header">
         <i class="user icon"></i>
@@ -103,12 +105,14 @@
     </div>
 
     <div class="ui centered grid">
-        <form class="ui form modal-form"
+        <form class="ui form modal-form" id="add-users-form"
               action="/add_user/{{project.id}}" method="post">
 
-            <input type="text" name="name" placeholder="Enter Username/Email">
+            <input type="text" name="name" placeholder="Enter username/email">
 
             <div class="row modal-buttons">
+                <div class="ui error message">
+                </div>
                 <button class="ui green ok inverted submit button"
                         type="submit"><i class="checkmark icon"></i>Add
                 </button>
@@ -127,6 +131,7 @@
     </div>
 </div>
 
+<!-- Update todo modal -->
 <div class="ui basic large modal top aligned" id="update-todo-modal">
     <div class="ui icon header">
         <i class="user icon"></i>

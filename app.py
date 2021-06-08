@@ -104,10 +104,10 @@ class Project(db.Model):
 def validate_user():
     # Check to see if username or email exists in database
     existing_username = User.query.filter_by(
-        username=request.form.get("username")).first()
+        username=request.form.get("entry")).first()
 
     existing_email = User.query.filter_by(
-        email=request.form.get("email")).first()
+        email=request.form.get("entry")).first()
 
     if existing_username:
         return jsonify("0")
