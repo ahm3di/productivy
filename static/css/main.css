@@ -2,7 +2,7 @@ body {
     margin-top: 5%;
 }
 
-#todo-row {
+#todo-row, #current-users-row {
     display: table;
 }
 
@@ -80,4 +80,8 @@ body {
 
 .modal-buttons {
     margin-top: 1%;
+}
+
+#remove-user-icon{
+    color:red;
 }

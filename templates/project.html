@@ -29,8 +29,8 @@
                         <i class="edit icon"></i> Edit </a>
                     <a class="item" href="/delete_project/{{ project.id }}">
                         <i class="trash icon"></i> Delete</a>
-                    <a class="item add-user-button">
-                        <i class="users icon"></i> Add users</a>
+                    <a class="item manage-users-button">
+                        <i class="users icon"></i> Manage users</a>
                 </div>
             </div>
         </h1>
@@ -97,11 +97,11 @@
     </div>
 </div>
 
-<!-- Add users modal -->
-<div class="ui basic large modal top aligned" id="add-users-modal">
+<!-- Manage users modal -->
+<div class="ui basic large modal top aligned" id="manage-users-modal">
     <div class="ui icon header">
         <i class="user icon"></i>
-        Add users
+        Add user
     </div>
 
     <div class="ui centered grid">
@@ -123,11 +123,15 @@
                 </a>
             </div>
         </form>
+        <h3 class="row"> Current Users: </h3>
         {%for user in users%}
-        <div class="row">
+        <div class="row" id="current-users-row">
             {{user.username}}
+            <a href="/delete_user/{{ project.id }}/{{ user.id }}">
+                <i class="minus circle icon" id="remove-user-icon"></i> </a>
         </div>
         {%endfor%}
+
     </div>
 </div>
 

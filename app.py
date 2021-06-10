@@ -233,7 +233,24 @@ def add_user(project_id):
                 .first()
         new_user.projects.append(current_project)
         db.session.commit()
+        return redirect(url_for("project", project_id=project_id, ))
+
+
+@app.route("/delete_user/<int:project_id>/<int:user_id>")
+@login_required
+def delete_user(project_id, user_id):
+    # Delete user from project
+    current_project = check_user_access(project_id)
+    user = User.query.filter_by(id=user_id).first()
+    update_project_details(current_project)
+    user.projects.remove(current_project)
+    remaining_users = User.query.filter(User.projects.any(id=project_id)).all()
+    if not remaining_users:
+        db.session.delete(current_project)
+    db.session.commit()
+    if user_id != current_user.id:
         return redirect(url_for("project", project_id=project_id))
+    return redirect(url_for("index"))
 
 
 @app.route("/add_todo/<int:project_id>", methods=["POST"])

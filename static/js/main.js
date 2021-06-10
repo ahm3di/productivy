@@ -162,8 +162,8 @@ $(function () {
         $('#update-project-modal').modal('show');
     });
 
-    $('.add-user-button').on('click', function () {
-        $('#add-users-modal').modal('show');
+    $('.manage-users-button').on('click', function () {
+        $('#manage-users-modal').modal('show');
     });
 
     $('.update-todo-button').on('click', function () {
