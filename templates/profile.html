@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block head %}{% endblock %}
+{% block body %}
+
+<main class="ui centered grid">
+
+    <div class="ui secondary pointing menu">
+        <a class="item" href="{{url_for('index')}}">
+            Home
+        </a>
+        <a class="item active" href="{{url_for('index')}}">
+            Profile
+        </a>
+        <div class="right menu">
+            <a class="ui item" href="{{url_for('logout')}}">
+                Logout
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+
+        <div class="ui card">
+            <div class="image">
+                <img src="{{ image }}">
+            </div>
+            <div class="content">
+                <div class="header left floated">{{user.username}}</div>
+
+                <div class="description">
+                    <div class="meta left floated">{{user.email}}</div>
+                </div>
+            </div>
+            <div class="extra content">
+                <a class="left floated">
+                    <i class="tasks icon"></i>
+                    8 projects
+                </a>
+                <a class="right floated" id="update-user-button">
+                    <i class="edit icon"></i>
+                    Update
+                </a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Update details user modal -->
+<div class="ui basic large modal top aligned" id="update-user-modal">
+    <div class="ui icon header">
+        <i class="user icon"></i>
+        Update details
+    </div>
+
+    <div class="ui centered grid">
+        <form id=register-form
+              class="ui large form modal-form" action="/profile" method="POST"
+              enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+
+            <div class="field">
+                <div class="ui left icon input">
+                    <i class="user icon"></i>
+                    {{ form.username(value=user.username,
+                    maxlength="20")}}
+                </div>
+            </div>
+            <div class="field">
+                <div class="ui left icon input">
+                    <i class="envelope icon"></i>
+                    {{ form.email(value=user.email,
+                    maxlength="50")}}
+                </div>
+            </div>
+            <div class="field">
+                <div class="ui left icon input">
+                    <i class="lock icon"></i>
+                    {{ form.password(placeholder="Password",
+                    maxlength="20")}}
+                </div>
+            </div>
+            <div>
+                <button class="ui green ok inverted submit button"
+                        type="submit"><i class="checkmark icon"></i>Update
+                </button>
+
+                <a class="ui red basic cancel inverted button"
+                   href="/">
+                    <i class="remove icon"></i>Cancel
+                </a>
+            </div>
+
+            <div class="ui error message">
+            </div>
+
+
+        </form>
+    </div>
+</div>
+
+{% endblock %}

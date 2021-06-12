@@ -9,7 +9,7 @@
         <a class="item active" href="{{url_for('index')}}">
             Home
         </a>
-        <a class="item" href="{{url_for('index')}}">
+        <a class="item" href="{{url_for('profile')}}">
             Profile
         </a>
         <div class="right menu">
@@ -29,7 +29,7 @@
     </div>
 
     <div class="row">
-        <h2> Your Projects: </h2>
+        <h2 contenteditable="true"> Your Projects: </h2>
     </div>
     <div class="row ui cards">
         {% for project in projects %}

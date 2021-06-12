@@ -5,6 +5,7 @@ from flask_login import UserMixin, login_user, LoginManager, login_required, \
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField
 from wtforms.validators import InputRequired, Length, ValidationError, Email
+from flask_wtf.file import FileField, FileAllowed
 from flask_bcrypt import Bcrypt
 from datetime import datetime
 
@@ -47,9 +48,8 @@ class RegisterForm(FlaskForm):
     username = StringField(validators=[InputRequired(), Length(min=4, max=20)])
 
     email = StringField(validators=[InputRequired(),
-                                    Email(message='Invalid email'),
+                                    Email(),
                                     Length(max=50)])
-
     password = PasswordField(
         validators=[InputRequired(), Length(min=4, max=20)])
 
@@ -63,6 +63,27 @@ class LoginForm(FlaskForm):
 
     remember = BooleanField('remember me')
 
+
+class UpdateAccountForm(FlaskForm):
+    username = StringField(validators=[InputRequired(), Length(min=4, max=20)])
+
+    email = StringField(validators=[InputRequired(), Email(), Length(max=50)])
+    image = FileField(validators=[FileAllowed(['jpg', 'png'])])
+    password = PasswordField(
+        validators=[InputRequired(), Length(min=4, max=20)])
+    submit = SubmitField('Update')
+
+    def validate_username(self, username):
+        if username.data != current_user.username:
+            user = User.query.filter_by(username=username.data).first()
+            if user:
+                raise ValidationError("Username is already taken.")
+
+    def validate_email(self, email):
+        if email.data != current_user.email:
+            user = User.query.filter_by(email=email.data).first()
+            if user:
+                raise ValidationError("Email is already taken.")
 
 # Association table between User and Project
 user_project = db.Table('user_project',
@@ -79,6 +100,7 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), nullable=False, unique=True)
     email = db.Column(db.String(50), nullable=False, unique=True)
+    image = db.Column(db.String(20), nullable=False, default='default.png')
     password = db.Column(db.String(80), nullable=False)
     projects = db.relationship('Project', secondary=user_project,
                                backref=db.backref('users'))
@@ -304,3 +326,20 @@ def update_todo(project_id, todo_id):
         update_project_details(current_project)
         db.session.commit()
         return redirect(url_for("project", project_id=project_id))
+
+
+@app.route('/profile', methods=["POST", "GET"])
+@login_required
+def profile():
+    # Show user profile
+    image = url_for('static', filename='profile_images/' + current_user.image)
+    form = UpdateAccountForm()
+    if form.validate_on_submit():
+        current_user.username = form.username.data
+        current_user.email = form.email.data
+        current_user.password = bcrypt.generate_password_hash(
+            form.password.data)
+        db.session.commit()
+        return redirect(url_for('profile'))
+    return render_template('profile.html', user=current_user, image=image,
+                           form=form)

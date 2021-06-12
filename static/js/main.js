@@ -158,6 +158,7 @@ $(function () {
 
     $('.ui.dropdown').dropdown();
 
+
     $('.update-project-button').on('click', function () {
         $('#update-project-modal').modal('show');
     });
@@ -183,5 +184,9 @@ $(function () {
 
         //Display modal
         $('#update-todo-modal').modal('show')
+    });
+
+    $('#update-user-button').on('click', function () {
+        $('#update-user-modal').modal('show');
     });
 });
