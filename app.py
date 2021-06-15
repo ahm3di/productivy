@@ -69,21 +69,8 @@ class UpdateAccountForm(FlaskForm):
 
     email = StringField(validators=[InputRequired(), Email(), Length(max=50)])
     image = FileField(validators=[FileAllowed(['jpg', 'png'])])
-    password = PasswordField(
-        validators=[InputRequired(), Length(min=4, max=20)])
-    submit = SubmitField('Update')
+    password = PasswordField()
 
-    def validate_username(self, username):
-        if username.data != current_user.username:
-            user = User.query.filter_by(username=username.data).first()
-            if user:
-                raise ValidationError("Username is already taken.")
-
-    def validate_email(self, email):
-        if email.data != current_user.email:
-            user = User.query.filter_by(email=email.data).first()
-            if user:
-                raise ValidationError("Email is already taken.")
 
 # Association table between User and Project
 user_project = db.Table('user_project',
@@ -126,17 +113,33 @@ class Project(db.Model):
 def validate_user():
     # Check to see if username or email exists in database
     existing_username = User.query.filter_by(
-        username=request.form.get("entry")).first()
+        username=request.form.get("value")).first()
 
     existing_email = User.query.filter_by(
-        email=request.form.get("entry")).first()
+        email=request.form.get("value")).first()
 
-    if existing_username:
+    # Validation when user attempts to update details
+    if request.form.get("identifier") == "updateDetails":
+        # Check if username is already taken
+        if existing_username and \
+                existing_username.username != current_user.username:
+            return jsonify("2")
+
+        # Check if email is already taken
+        elif existing_email and \
+                existing_email.email != current_user.email:
+            return jsonify("3")
+        # If neither email or username are taken return any value
+        else:
+            return jsonify("4")
+
+    # Validation for user registration
+    elif existing_username:
         return jsonify("0")
     elif existing_email:
         return jsonify("1")
     else:
-        return jsonify("2")
+        return jsonify("4")
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -164,9 +167,9 @@ def login():
 
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.username.data.lower()).first()
+        user = User.query.filter_by(username=form.username.data.lower()).first()
         if not user:
-            user = User.query.filter_by(username=form.username.data.lower()). \
+            user = User.query.filter_by(email=form.username.data.lower()). \
                 first()
 
         if user:
@@ -337,8 +340,9 @@ def profile():
     if form.validate_on_submit():
         current_user.username = form.username.data
         current_user.email = form.email.data
-        current_user.password = bcrypt.generate_password_hash(
-            form.password.data)
+        if form.password.data:
+            current_user.password = bcrypt.generate_password_hash(
+                form.password.data)
         db.session.commit()
         return redirect(url_for('profile'))
     return render_template('profile.html', user=current_user, image=image,

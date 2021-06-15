@@ -8,7 +8,7 @@
         <a class="item" href="{{url_for('index')}}">
             Home
         </a>
-        <a class="item active" href="{{url_for('index')}}">
+        <a class="item active" href="{{url_for('profile')}}">
             Profile
         </a>
         <div class="right menu">
@@ -53,7 +53,7 @@
     </div>
 
     <div class="ui centered grid">
-        <form id=register-form
+        <form id=update-user-form
               class="ui large form modal-form" action="/profile" method="POST"
               enctype="multipart/form-data">
             {{ form.hidden_tag() }}
@@ -85,7 +85,7 @@
                 </button>
 
                 <a class="ui red basic cancel inverted button"
-                   href="/">
+                   href="/profile">
                     <i class="remove icon"></i>Cancel
                 </a>
             </div>

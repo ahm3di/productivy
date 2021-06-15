@@ -7,7 +7,7 @@ $(function () {
             type: "POST",
             async: false,
             data: {
-                entry: value
+                value: value,
             },
             dataType: 'json',
             success: function (data) {
@@ -19,7 +19,7 @@ $(function () {
                     result = false;
                 }
                 // Error displayed if username or email don't exist
-                else if (data == "2" && formIdentifier == "userEmail") {
+                else if (data == "4" && formIdentifier == "userEmail") {
                     result = false;
                 } else {
                     result = true;
@@ -28,6 +28,34 @@ $(function () {
         });
         return result;
     };
+
+    // Custom fomantic rule..............
+    $.fn.form.settings.rules.updateDetails = function (value, formIdentifier) {
+        let result = true
+        $.ajax({
+            url: '/validate_user',
+            type: "POST",
+            async: false,
+            data: {
+                value: value,
+                identifier: "updateDetails"
+            },
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                // .......
+                if (data == "2" && formIdentifier == "username") {
+                    result = false;
+                } else if (data == "3" && formIdentifier == "email") {
+                    result = false;
+                } else {
+                    result = true;
+                }
+            }
+        });
+        return result;
+    };
+
 
     // Form validation to prevent empty project and todo names
     $('#todo-form, #update-todo-form, #update-project-form')
@@ -56,6 +84,11 @@ $(function () {
                         {
                             type: 'checkUser[username]',
                             prompt: 'Username already exists'
+                        },
+                        {
+                            type: 'regExp[/^\\w+$/]',
+                            prompt: 'Username can only contain letters, ' +
+                                'numbers or underscore '
                         }
                     ]
                 },
@@ -151,6 +184,54 @@ $(function () {
                     ]
                 }
             },
+        });
+
+    // Form validation for login form
+    $('#update-user-form')
+        .form({
+            fields: {
+                username: {
+                    identifier: 'username',
+                    rules: [
+                        {
+                            type: 'updateDetails[username]',
+                            prompt: 'Username already exists, ' +
+                                'please try a different one',
+                        },
+                        {
+                            type: 'length[3]',
+                            prompt: 'Your username must be at least 3 characters',
+                        }
+                    ]
+                },
+                email: {
+                    identifier: 'email',
+                    rules: [
+                        {
+                            type: 'updateDetails[email]',
+                            prompt: 'Email already exists, ' +
+                                'please enter another email',
+                        },
+                        {
+                            type: 'email',
+                            prompt: 'Please enter a valid email address',
+                        }
+                    ]
+                },
+                // password: {
+                //     identifier: 'password',
+                //     rules: [
+                //         {
+                //             type: 'empty',
+                //             prompt: 'Please enter your password'
+                //         },
+                //         {
+                //             type: 'length[4]',
+                //             prompt: 'Your password must be at least 4 characters'
+                //         }
+                //     ]
+                // }
+            }
         });
 
 
