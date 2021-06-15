@@ -118,14 +118,14 @@ def validate_user():
     existing_email = User.query.filter_by(
         email=request.form.get("value")).first()
 
-    # Validation when user attempts to update details
+    # Validation when user attempts to update account details
     if request.form.get("identifier") == "updateDetails":
-        # Check if username is already taken
+        # Check if username is already taken by anyone, but the current user
         if existing_username and \
                 existing_username.username != current_user.username:
             return jsonify("2")
 
-        # Check if email is already taken
+        # Check if email is already taken by anyone, but the current user
         elif existing_email and \
                 existing_email.email != current_user.email:
             return jsonify("3")

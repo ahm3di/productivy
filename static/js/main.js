@@ -29,7 +29,7 @@ $(function () {
         return result;
     };
 
-    // Custom fomantic rule..............
+    // Custom fomantic rule for updating user details
     $.fn.form.settings.rules.updateDetails = function (value, formIdentifier) {
         let result = true
         $.ajax({
@@ -43,7 +43,7 @@ $(function () {
             dataType: 'json',
             success: function (data) {
                 console.log(data);
-                // .......
+                // Error displayed if username or email are already taken
                 if (data == "2" && formIdentifier == "username") {
                     result = false;
                 } else if (data == "3" && formIdentifier == "email") {
@@ -55,7 +55,6 @@ $(function () {
         });
         return result;
     };
-
 
     // Form validation to prevent empty project and todo names
     $('#todo-form, #update-todo-form, #update-project-form')
@@ -218,19 +217,16 @@ $(function () {
                         }
                     ]
                 },
-                // password: {
-                //     identifier: 'password',
-                //     rules: [
-                //         {
-                //             type: 'empty',
-                //             prompt: 'Please enter your password'
-                //         },
-                //         {
-                //             type: 'length[4]',
-                //             prompt: 'Your password must be at least 4 characters'
-                //         }
-                //     ]
-                // }
+                password: {
+                    identifier: 'password',
+                    rules: [
+                        {
+                            type: 'regExp[/^(\\S{4,})?$/]',
+                            prompt: 'Your new password must be at ' +
+                                'least 4 characters'
+                        }
+                    ]
+                }
             }
         });
 
