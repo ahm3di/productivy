@@ -231,10 +231,9 @@ $(function () {
         });
 
 
-    $('.button').popup();
+    $('.update-todo-button, .delete-todo-button').popup();
 
     $('.ui.dropdown').dropdown();
-
 
     $('.update-project-button').on('click', function () {
         $('#update-project-modal').modal('show');

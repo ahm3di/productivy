@@ -58,12 +58,14 @@
 
         <input class="current-todo-id" type="hidden" value="{{todo.id}}">
         <input class="current-todo-title" type="hidden" value="{{todo.title}}">
-        <a class="ui icon update-todo-button">
+        <a class="ui icon update-todo-button" data-content="Edit"
+           data-variation="tiny inverted">
             <i class="edit icon"></i>
         </a>
 
         <a href="/delete_todo/{{ project.id }}/{{ todo.id }}"
-           class="ui icon delete-todo-button">
+           class="ui icon delete-todo-button" data-content="Delete"
+           data-variation="tiny inverted">
             <i class="trash alternate outline icon"></i>
         </a>
     </div>
