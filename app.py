@@ -98,6 +98,7 @@ class Todo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(50), nullable=False)
     complete = db.Column(db.BOOLEAN)
+    priority = db.Column(db.Integer)
     project_id = db.Column(db.Integer, db.ForeignKey('project.id'))
 
 
@@ -193,7 +194,9 @@ def index():
     # Show all projects for current user
     projects = Project.query.filter(Project.users.any(id=current_user.id)).all()
     users = User.query.all()
-    return render_template('index.html', projects=projects, users=users)
+    image = url_for('static', filename='profile_images/' + current_user.image)
+    return render_template('index.html', projects=projects, users=users,
+                           image=image)
 
 
 @app.route('/project/<int:project_id>')
@@ -201,7 +204,9 @@ def index():
 def project(project_id):
     # Show all todos from project
     current_project = check_user_access(project_id)
-    todo_list = Todo.query.filter_by(project_id=project_id).all()
+    # Get all todos for selected project and sort by priority level
+    todo_list = Todo.query.filter_by(project_id=project_id) \
+        .order_by(Todo.priority.desc()).all()
     project_users = User.query.filter(User.projects.any(id=project_id)).all()
     return render_template('project.html', project=current_project,
                            todo_list=todo_list, users=project_users)
@@ -284,7 +289,7 @@ def add_todo(project_id):
     # Add new todo
     current_project = check_user_access(project_id)
     title = request.form.get("title")
-    new_todo = Todo(title=title, complete=False)
+    new_todo = Todo(title=title, complete=False, priority=0)
     update_project_details(current_project)
     current_project.todos.append(new_todo)
     db.session.add(new_todo)
@@ -299,6 +304,19 @@ def update_todo_status(project_id, todo_id):
     current_project = check_user_access(project_id)
     todo = Todo.query.filter_by(id=todo_id).first()
     todo.complete = not todo.complete
+    update_project_details(current_project)
+    db.session.commit()
+    return redirect(url_for("project", project_id=project_id))
+
+
+@app.route(
+    "/update_todo_priority/<int:project_id>/<int:todo_id>/<int:priority>")
+@login_required
+def update_todo_priority(project_id, todo_id, priority):
+    # Update todo priority
+    current_project = check_user_access(project_id)
+    todo = Todo.query.filter_by(id=todo_id).first()
+    todo.priority = priority
     update_project_details(current_project)
     db.session.commit()
     return redirect(url_for("project", project_id=project_id))
@@ -323,7 +341,6 @@ def update_todo(project_id, todo_id):
     # Update todo
     current_project = check_user_access(project_id)
     todo = Todo.query.filter_by(id=todo_id).first()
-
     if request.method == "POST":
         todo.title = request.form.get("title")
         update_project_details(current_project)

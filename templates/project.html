@@ -40,7 +40,7 @@
         <form id="todo-form" class="ui action left icon input"
               action="/add_todo/{{project.id}}" method="post">
 
-            <input type="text" name="title" placeholder="Enter Todo..."
+            <input type="text" name="title" placeholder="Enter Task..."
                    maxlength="50">
             <button class="ui teal button" type="submit">Add</button>
         </form>
@@ -48,6 +48,39 @@
 
     {% for todo in todo_list|sort(attribute='complete') %}
     <div class="row" id="todo-row">
+        <div class="ui icon inverted dropdown">
+            <div class="menu">
+                <a href="/update_todo_priority/{{ project.id }}/{{ todo.id }}/{{ 0 }}"
+                   class="item"><i class="circle icon low-priority"></i>Low
+                    priority
+                </a>
+                <a href="/update_todo_priority/{{ project.id }}/{{ todo.id }}/{{ 1 }}"
+                   class="item"><i class="circle icon medium-priority"></i>Medium
+                    priority
+                </a>
+                <a href="/update_todo_priority/{{ project.id }}/{{ todo.id }}/{{ 2 }}"
+                   class="item"><i class="circle icon high-priority"></i>High
+                    priority
+                </a>
+            </div>
+            <i
+
+                    {% if todo.priority== 0 %}
+                    class="circle icon low-priority priority-indicator"
+                    data-content="Low Priority" data-variation="tiny inverted"
+
+                    {% elif todo.priority== 1 %}
+                    class="circle icon medium-priority priority-indicator"
+                    data-content="Medium Priority" data-variation="tiny inverted"
+
+                    {% else %}
+                    class="circle icon high-priority priority-indicator"
+                    data-content="High Priority" data-variation="tiny inverted"
+                    {% endif %}
+            ></i>
+        </div>
+
+
         {% if todo.complete == False %}
         <a href="/update_todo_status/{{ project.id }}/{{ todo.id }}"
            id="incomplete-todo"> {{ todo.title }} </a>
@@ -58,6 +91,7 @@
 
         <input class="current-todo-id" type="hidden" value="{{todo.id}}">
         <input class="current-todo-title" type="hidden" value="{{todo.title}}">
+
         <a class="ui icon update-todo-button" data-content="Edit"
            data-variation="tiny inverted">
             <i class="edit icon"></i>

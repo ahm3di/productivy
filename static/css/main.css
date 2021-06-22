@@ -16,23 +16,23 @@ body {
 
 .update-todo-button {
     background: white;
-    color: steelblue;
+    color: grey;
     margin-left: 1%;
     cursor: pointer;
 }
 
 .delete-todo-button {
     background: white;
-    color: red;
+    color: grey;
     margin-left: 1%;
 }
 
 .update-todo-button:hover {
-    color: black;
+    color: steelblue;
 }
 
 .delete-todo-button:hover {
-    color: black;
+    color: red;
 }
 
 .remember-me-checkbox {
@@ -85,3 +85,16 @@ body {
 #remove-user-icon{
     color:red;
 }
+
+.low-priority{
+    color: #54C300;
+}
+
+.medium-priority{
+    color: orange;
+}
+
+.high-priority{
+    color: #E70000;
+}
+

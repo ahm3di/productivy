@@ -231,7 +231,7 @@ $(function () {
         });
 
 
-    $('.update-todo-button, .delete-todo-button').popup();
+    $('.update-todo-button, .delete-todo-button, .priority-indicator').popup();
 
     $('.ui.dropdown').dropdown();
 
