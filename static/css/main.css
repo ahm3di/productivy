@@ -92,9 +92,18 @@ body {
 
 .medium-priority{
     color: orange;
+    margin-right: 1%;
 }
 
 .high-priority{
     color: #E70000;
+}
+
+#priority-dropdown{
+    min-width: 125px
+}
+
+#todo-input{
+    width: 60%;
 }
 

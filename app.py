@@ -289,7 +289,8 @@ def add_todo(project_id):
     # Add new todo
     current_project = check_user_access(project_id)
     title = request.form.get("title")
-    new_todo = Todo(title=title, complete=False, priority=0)
+    priority = request.form.get("priority")
+    new_todo = Todo(title=title, complete=False, priority=priority)
     update_project_details(current_project)
     current_project.todos.append(new_todo)
     db.session.add(new_todo)

@@ -235,6 +235,8 @@ $(function () {
 
     $('.ui.dropdown').dropdown();
 
+    $('.selection.dropdown').dropdown();
+
     $('.update-project-button').on('click', function () {
         $('#update-project-modal').modal('show');
     });

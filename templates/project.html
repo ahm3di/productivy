@@ -37,18 +37,35 @@
     </header>
 
     <div class="row">
-        <form id="todo-form" class="ui action left icon input"
+        <form id="todo-form" class="ui action input"
               action="/add_todo/{{project.id}}" method="post">
 
-            <input type="text" name="title" placeholder="Enter Task..."
-                   maxlength="50">
+            <input id= "todo-input" type="text" name="title"
+                   placeholder="Enter Task..." maxlength="50">
+            <div class="ui selection dropdown small" id="priority-dropdown">
+                <input type="hidden" name="priority">
+                <i class="dropdown icon"></i>
+                <div class="default text">Priority</div>
+                <div class="menu">
+                    <div class="item" data-value="0">
+                       <span> <i class="circle icon low-priority"></i>Low</span>
+                    </div>
+                    <div class="item" data-value="1">
+                        <span> <i class="circle icon medium-priority"></i>Medium</span>
+                    </div>
+                    <div class="item" data-value="2">
+                        <span><i class="circle icon high-priority"></i>High</span>
+                    </div>
+                </div>
+            </div>
+
             <button class="ui teal button" type="submit">Add</button>
         </form>
     </div>
 
     {% for todo in todo_list|sort(attribute='complete') %}
     <div class="row" id="todo-row">
-        <div class="ui icon inverted dropdown">
+        <div class="ui icon inverted top left pointing dropdown">
             <div class="menu">
                 <a href="/update_todo_priority/{{ project.id }}/{{ todo.id }}/{{ 0 }}"
                    class="item"><i class="circle icon low-priority"></i>Low
@@ -71,7 +88,8 @@
 
                     {% elif todo.priority== 1 %}
                     class="circle icon medium-priority priority-indicator"
-                    data-content="Medium Priority" data-variation="tiny inverted"
+                    data-content="Medium Priority"
+                    data-variation="tiny inverted"
 
                     {% else %}
                     class="circle icon high-priority priority-indicator"
