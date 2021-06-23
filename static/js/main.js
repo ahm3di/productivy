@@ -245,6 +245,10 @@ $(function () {
         $('#manage-users-modal').modal('show');
     });
 
+     $('.delete-project-button').on('click', function () {
+        $('#delete-project-modal').modal('show');
+    });
+
     $('.update-todo-button').on('click', function () {
         // Get todo title and id from hidden fields
         var current_todo_id = $('.current-todo-id').val();

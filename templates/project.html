@@ -27,7 +27,7 @@
                     <div class="header">Manage project</div>
                     <a class="item update-project-button">
                         <i class="edit icon"></i> Edit </a>
-                    <a class="item" href="/delete_project/{{ project.id }}">
+                    <a class="item delete-project-button">
                         <i class="trash icon"></i> Delete</a>
                     <a class="item manage-users-button">
                         <i class="users icon"></i> Manage users</a>
@@ -40,7 +40,7 @@
         <form id="todo-form" class="ui action input"
               action="/add_todo/{{project.id}}" method="post">
 
-            <input id= "todo-input" type="text" name="title"
+            <input id="todo-input" type="text" name="title"
                    placeholder="Enter Task..." maxlength="50">
             <div class="ui selection dropdown small" id="priority-dropdown">
                 <input type="hidden" name="priority">
@@ -48,17 +48,18 @@
                 <div class="default text">Priority</div>
                 <div class="menu">
                     <div class="item" data-value="0">
-                       <span> <i class="circle icon low-priority"></i>Low</span>
+                        <span> <i
+                                class="circle icon low-priority"></i>Low</span>
                     </div>
                     <div class="item" data-value="1">
                         <span> <i class="circle icon medium-priority"></i>Medium</span>
                     </div>
                     <div class="item" data-value="2">
-                        <span><i class="circle icon high-priority"></i>High</span>
+                        <span><i
+                                class="circle icon high-priority"></i>High</span>
                     </div>
                 </div>
             </div>
-
             <button class="ui teal button" type="submit">Add</button>
         </form>
     </div>
@@ -214,5 +215,27 @@
             </div>
         </form>
     </div>
+</div>
+
+<!-- Confirm delete modal -->
+<div class="ui ui mini inverted top aligned modal" id="delete-project-modal">
+    <div class="header">
+        Delete project
+    </div>
+    <div class="content">
+        <p>Are you sure you want to delete this project?</p>
+    </div>
+    <div class="actions">
+        <a class="ui negative button" href="/project/{{project.id}}">
+            <i class="remove icon"></i>
+            No
+        </a>
+        <a class="ui positive right labeled icon button"
+           href="/delete_project/{{project.id}}">
+            <i class="checkmark icon"></i>
+            Yes
+        </a>
+    </div>
+
 </div>
 {% endblock %}
