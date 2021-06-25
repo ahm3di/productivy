@@ -8,11 +8,17 @@ from wtforms.validators import InputRequired, Length, ValidationError, Email
 from flask_wtf.file import FileField, FileAllowed
 from flask_bcrypt import Bcrypt
 from datetime import datetime
+import os
+from werkzeug.utils import secure_filename
+
+UPLOAD_FOLDER = 'static/profile_images'
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'secretkeygoeshere'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 
@@ -361,6 +367,9 @@ def profile():
         if form.password.data:
             current_user.password = bcrypt.generate_password_hash(
                 form.password.data)
+        image = request.files['image']
+        if image:
+            print(image)
         db.session.commit()
         return redirect(url_for('profile'))
     return render_template('profile.html', user=current_user, image=image,
