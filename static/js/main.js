@@ -245,7 +245,7 @@ $(function () {
         $('#manage-users-modal').modal('show');
     });
 
-     $('.delete-project-button').on('click', function () {
+    $('.delete-project-button').on('click', function () {
         $('#delete-project-modal').modal('show');
     });
 

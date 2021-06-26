@@ -327,11 +327,17 @@ fabric.properties
 
 # profiling data
 
-# sqlite
+# Sqlite
 /database.db
 
 # flaskenv
 .flaskenv
 
-#idea directory
+# Idea directory
 .idea
+
+# Ignore all profile images
+profile_images
+
+# ...apart from default image
+!profile_images/default.png

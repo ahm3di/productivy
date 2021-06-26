@@ -12,9 +12,9 @@ import os
 from werkzeug.utils import secure_filename
 
 UPLOAD_FOLDER = 'static/profile_images'
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 app = Flask(__name__)
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'secretkeygoeshere'
@@ -74,7 +74,7 @@ class UpdateAccountForm(FlaskForm):
     username = StringField(validators=[InputRequired(), Length(min=4, max=20)])
 
     email = StringField(validators=[InputRequired(), Email(), Length(max=50)])
-    image = FileField(validators=[FileAllowed(['jpg', 'png'])])
+    image = FileField()
     password = PasswordField()
 
 
@@ -212,7 +212,7 @@ def project(project_id):
     current_project = check_user_access(project_id)
     # Get all todos for selected project and sort by priority level
     todo_list = Todo.query.filter_by(project_id=project_id) \
-        .order_by(Todo.priority.desc()).all()
+        .order_by(Todo.priority.desc(), Todo.id.desc()).all()
     project_users = User.query.filter(User.projects.any(id=project_id)).all()
     return render_template('project.html', project=current_project,
                            todo_list=todo_list, users=project_users)
@@ -369,7 +369,13 @@ def profile():
                 form.password.data)
         image = request.files['image']
         if image:
-            print(image)
+            filename, file_extension = os.path.splitext(image.filename)
+            filename = str(current_user.id) + file_extension
+            if current_user.image != "default.png":
+                os.remove(app.config["UPLOAD_FOLDER"] + "/" +
+                          str(current_user.image))
+            image.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+            current_user.image = filename
         db.session.commit()
         return redirect(url_for('profile'))
     return render_template('profile.html', user=current_user, image=image,
