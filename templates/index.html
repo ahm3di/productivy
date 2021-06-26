@@ -72,8 +72,11 @@
                 {{ project.last_update.strftime('%d-%m-%y | %H:%M')}}
             </div>
             <div class="right floated author">
-                <img class="ui avatar image" src="{{image}}">{{users| selectattr("id",
-                "equalto", project.last_user) | first | attr("username") }}
+                {% set last_user = users| selectattr("id",
+                "equalto", project.last_user) | first %}
+                <img class="ui avatar image" src={{url_for('static',
+                     filename='profile_images/' +last_user.image)}}>
+                {{last_user.username }}
             </div>
         </div>
         {% endfor %}
