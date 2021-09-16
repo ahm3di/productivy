@@ -9,8 +9,8 @@ class Config(object):
 
 class ProductionConfig(Config):
     SECRET_KEY = os.environ.get('SECRET_KEY')
-    DATABASE_URL = os.environ.get("DATABASE_URL").replace("postgres",
-                                                          "postgresql")
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL").replace(
+        "postgres", "postgresql")
     UPLOAD_FOLDER = 'static/profile_images'
 
 
