@@ -14,11 +14,13 @@ from werkzeug.utils import secure_filename
 UPLOAD_FOLDER = 'static/profile_images'
 
 app = Flask(__name__)
-app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = 'secretkeygoeshere'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+# app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# app.config['SECRET_KEY'] = 'secretkeygoeshere'
+# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+env_config = os.environ['CONFIG_SETUP']
+app.config.from_object(env_config)
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 
