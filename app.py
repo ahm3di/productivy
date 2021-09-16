@@ -113,7 +113,7 @@ class Todo(db.Model):
 class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(60), nullable=False)
-    last_update = db.Column(db.DATETIME, nullable=False)
+    last_update = db.Column(db.TIMESTAMP, nullable=False)
     last_user = db.Column(db.Integer, nullable=False)
     todos = db.relationship('Todo', backref='project')
 
