@@ -96,7 +96,7 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(20), nullable=False, unique=True)
     email = db.Column(db.String(50), nullable=False, unique=True)
     image = db.Column(db.String(20), nullable=False, default='default.png')
-    password = db.Column(db.String(80), nullable=False)
+    password = db.Column(db.CHAR(100), nullable=False)
     projects = db.relationship('Project', secondary=user_project,
                                backref=db.backref('users'))
 
