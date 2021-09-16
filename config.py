@@ -8,14 +8,14 @@ class Config(object):
 
 class ProductionConfig(Config):
     SECRET_KEY = os.environ.get('SECRET_KEY')
-    DATABASE_URI = os.environ.get('DATABASE_URL')
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
     UPLOAD_FOLDER = 'static/profile_images'
 
 
 class DevelopmentConfig(Config):
     ENV = "development"
     SECRET_KEY = "secretkeygoeshere"
-    DATABASE_URI = 'sqlite:///database.db'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///database.db'
     UPLOAD_FOLDER = 'static/profile_images'
     SEND_FILE_MAX_AGE_DEFAULT = 0
     SQLALCHEMY_TRACK_MODIFICATIONS = False
