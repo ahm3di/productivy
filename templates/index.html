@@ -69,7 +69,7 @@
 
         <div class="extra content">
             <div class="left floated">
-                {{ project.last_update.strftime('%d-%m-%y | %H:%M')}}
+                {{ (utc_to_gmt(project.last_update)).strftime('%d-%m-%y | %H:%M')}}
             </div>
             <div class="right floated author">
                 {% set last_user = users| selectattr("id",

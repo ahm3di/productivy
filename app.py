@@ -7,11 +7,11 @@ from wtforms import StringField, PasswordField, BooleanField
 from wtforms.validators import InputRequired, Length, ValidationError, Email
 from flask_wtf.file import FileField
 from flask_bcrypt import Bcrypt
-from datetime import datetime
+from datetime import datetime, timezone
+import pytz
 import os
 
 UPLOAD_FOLDER = 'static/profile_images'
-
 app = Flask(__name__)
 env_config = os.environ['CONFIG_SETUP']
 app.config.from_object(env_config)
@@ -28,6 +28,15 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
+# Used to convert UTC time to GMT and inject values in jinja2 template
+@app.context_processor
+def utility_processor():
+    def utc_to_gmt(utc_dt):
+        gmt = pytz.timezone("Europe/London")
+        return utc_dt.replace(tzinfo=timezone.utc).astimezone(gmt)
+    return dict(utc_to_gmt=utc_to_gmt)
+
+
 def check_user_access(project_id):
     # Validate user access to a project to prevent users from altering
     # data they shouldn't have access to
@@ -42,7 +51,7 @@ def check_user_access(project_id):
 
 def update_project_details(current_project):
     # Update project details with new information
-    current_project.last_update = datetime.now()
+    current_project.last_update = datetime.now(pytz.timezone("UTC"))
     current_project.last_user = current_user.id
 
 
@@ -193,12 +202,10 @@ def logout():
 @app.route('/')
 @login_required
 def index():
-    # Show all projects for current user
+    # Query all projects for current user
     projects = Project.query.filter(Project.users.any(id=current_user.id)).all()
     users = User.query.all()
-    image = url_for('static', filename='profile_images/' + current_user.image)
-    return render_template('index.html', projects=projects, users=users,
-                           image=image)
+    return render_template('index.html', projects=projects, users=users)
 
 
 @app.route('/project/<int:project_id>')
@@ -219,7 +226,7 @@ def project(project_id):
 def add_project():
     # Add new project
     name = request.form.get("name")
-    new_project = Project(name=name, last_update=datetime.now(),
+    new_project = Project(name=name, last_update=datetime.now(pytz.timezone("UTC")),
                           last_user=current_user.id)
     current_user.projects.append(new_project)
     db.session.add(new_project)
