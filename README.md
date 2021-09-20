@@ -5,7 +5,7 @@ collaborate with others. Priority levels can be assigned to each task, using a
 simple UI, allowing you to focus on the things that matter most. 
 [Try it out](https://productivy.herokuapp.com/)
 
-# Setup
+# Installation
 
 - Download or clone this repository:
 `git clone https://github.com/ahm3di/productivy.git`
