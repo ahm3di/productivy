@@ -7,7 +7,7 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
-class ProductionConfig(Config):
+class Production(Config):
     SECRET_KEY = os.environ.get('SECRET_KEY')
     if os.environ.get("DATABASE_URL"):
         SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL").replace(
@@ -15,7 +15,7 @@ class ProductionConfig(Config):
     UPLOAD_FOLDER = 'static/profile_images'
 
 
-class DevelopmentConfig(Config):
+class Development(Config):
     ENV = "development"
     SECRET_KEY = "secretkeygoeshere"
     SQLALCHEMY_DATABASE_URI = 'sqlite:///database.db'
