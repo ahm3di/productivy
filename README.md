@@ -26,7 +26,7 @@ simple UI, allowing you to focus on the things that matter most.
     - Linux: `export CONFIG_STEUP="config.Development"`
 
 - Create SQLite database for testing purposes:
-`python3 create-db.py `
+`python3 createdb.py `
 
 - Run the web application:
 `flask run`
