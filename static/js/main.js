@@ -12,7 +12,7 @@ $(function () {
             dataType: 'json',
             success: function (data) {
                 console.log(data);
-                // If username or email exist in database and error is displayed
+                // If username or email exist in database an error is displayed
                 if (data == "0" && formIdentifier == "username") {
                     result = false;
                 } else if (data == "1" && formIdentifier == "email") {

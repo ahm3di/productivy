@@ -34,6 +34,7 @@ def utility_processor():
     def utc_to_gmt(utc_dt):
         gmt = pytz.timezone("Europe/London")
         return utc_dt.replace(tzinfo=timezone.utc).astimezone(gmt)
+
     return dict(utc_to_gmt=utc_to_gmt)
 
 
@@ -125,10 +126,10 @@ class Project(db.Model):
 def validate_user():
     # Check to see if username or email exists in database
     existing_username = User.query.filter_by(
-        username=request.form.get("value")).first()
+        username=request.form.get("value").lower()).first()
 
     existing_email = User.query.filter_by(
-        email=request.form.get("value")).first()
+        email=request.form.get("value").lower()).first()
 
     # Validation when user attempts to update account details
     if request.form.get("identifier") == "updateDetails":
@@ -226,7 +227,8 @@ def project(project_id):
 def add_project():
     # Add new project
     name = request.form.get("name")
-    new_project = Project(name=name, last_update=datetime.now(pytz.timezone("UTC")),
+    new_project = Project(name=name,
+                          last_update=datetime.now(pytz.timezone("UTC")),
                           last_user=current_user.id)
     current_user.projects.append(new_project)
     db.session.add(new_project)
@@ -266,9 +268,11 @@ def add_user(project_id):
     # Add user to project
     current_project = check_user_access(project_id)
     if request.method == "POST":
-        new_user = User.query.filter_by(email=request.form.get("name")).first()
+        new_user = User.query.filter_by(
+            email=request.form.get("name").lower()).first()
         if not new_user:
-            new_user = User.query.filter_by(username=request.form.get("name")) \
+            new_user = User.query.filter_by(
+                username=request.form.get("name").lower()) \
                 .first()
         new_user.projects.append(current_project)
         db.session.commit()
