@@ -23,7 +23,7 @@ simple UI, allowing you to focus on the things that matter most.
 - (Optional) Set your own `SECRET_KEY` in `config.py`
 - Set environment variable `SETUP_CONFIG` to `config.Development`:
     - Windows: `set "CONFIG_SETUP=config.Development"`
-    - Linux: `export CONFIG_STEUP="config.Development"`
+    - Linux: `export CONFIG_SETUP="config.Development"`
 
 - Create SQLite database for testing purposes:
 `python3 createdb.py `
