@@ -107,3 +107,7 @@ body {
     width: 60%;
 }
 
+.column{
+    max-width:450px;
+}
+
