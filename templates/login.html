@@ -3,45 +3,45 @@
 {% block head %}{% endblock %}
 {% block body %}
 
-<div class="ui center aligned page grid">
-    <div class="column">
-        <h1 class="ui teal header">Sign in to your account</h1>
+    <div class="ui center aligned page grid">
+        <div class="column">
+            <h1 class="ui teal header">Sign in to your account</h1>
 
-        <form id="login-form"
-              class="ui large form" action="/login" method="POST">
-            {{ form.hidden_tag() }}
-            <div class="ui segment">
-                <div class="field">
-                    <div class="ui left icon input">
-                        <i class="user icon"></i>
-                        {{ form.username(placeholder="Username/Email")}}
-                    </div>
-                </div>
-                <div class="field">
-                    <div class="ui left icon input">
-                        <i class="lock icon"></i>
-                        {{ form.password(placeholder="Password")}}
-                    </div>
-                </div>
-                <div class="field">
-                    <div class="remember-me-checkbox">
-                        <div class="ui checkbox">
-                            {{ form.remember}}
-                            <label>Remember me</label>
+            <form id="login-form"
+                  class="ui large form" action="/login" method="POST">
+                {{ form.hidden_tag() }}
+                <div class="ui segment">
+                    <div class="field">
+                        <div class="ui left icon input">
+                            <i class="user icon"></i>
+                            {{ form.username(placeholder="Username/Email") }}
                         </div>
                     </div>
-                    <button class="ui fluid large teal submit button"
-                            type="submit" value="submit">Login
-                    </button>
+                    <div class="field">
+                        <div class="ui left icon input">
+                            <i class="lock icon"></i>
+                            {{ form.password(placeholder="Password") }}
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="remember-me-checkbox">
+                            <div class="ui checkbox">
+                                {{ form.remember }}
+                                <label>Remember me</label>
+                            </div>
+                        </div>
+                        <button class="ui fluid large teal submit button"
+                                type="submit" value="submit">Login
+                        </button>
+                    </div>
+                    <div class="ui error message"></div>
                 </div>
-                <div class="ui error message"></div>
-            </div>
-        </form>
+            </form>
 
-        <div class="ui message">
-            Dont have an account? <a href="{{url_for('register')}}">Sign Up</a>
+            <div class="ui message">
+                Dont have an account? <a href="{{ url_for('register') }}">Sign Up</a>
+            </div>
         </div>
     </div>
-</div>
 
 {% endblock %}

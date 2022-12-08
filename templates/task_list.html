@@ -1,0 +1,69 @@
+{% for task in task_list|sort(attribute='complete') %}
+    <div class="row" id="task-row">
+        <form class="task-form update-priority-form" method="post"
+              action="/update_task_priority/{{ project.id }}/">
+            <input type="hidden" name="priority">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <div class="ui icon inverted top left pointing dropdown task-dropdown">
+                <div class="menu">
+                    <div class="item" data-value="{{ task.id }}/0">
+                        <i class="circle icon low-priority"></i>Low priority
+                    </div>
+
+                    <div class="item" data-value="{{ task.id }}/1">
+                        <i class="circle icon medium-priority"></i>Medium priority
+                    </div>
+
+                    <div class="item" data-value="{{ task.id }}/2">
+                        <i class="circle icon high-priority"></i>High priority
+                    </div>
+                </div>
+                <i
+                        {% if task.priority== 0 %}
+                            class="circle icon low-priority priority-indicator"
+                            data-content="Low Priority" data-variation="tiny inverted"
+
+                        {% elif task.priority== 1 %}
+                            class="circle icon medium-priority priority-indicator"
+                            data-content="Medium Priority" data-variation="tiny inverted"
+
+                        {% else %}
+                            class="circle icon high-priority priority-indicator"
+                            data-content="High Priority" data-variation="tiny inverted"
+                        {% endif %}
+                ></i>
+
+            </div>
+        </form>
+
+
+        {% if task.complete == False %}
+            <form class="task-form" action="/update_task_status/{{ project.id }}/{{ task.id }}" method="post">
+                <button class="task-text" type="submit" id="incomplete-task">{{ task.title }} </button>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            </form>
+
+        {% else %}
+            <form class="task-form" action="/update_task_status/{{ project.id }}/{{ task.id }}" method="post">
+                <button class="task-text" type="submit" id="completed-task"> {{ task.title }}></button>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            </form>
+        {% endif %}
+
+        <i class="update-task-button" data-content="Edit"
+           data-variation="tiny inverted" data-task-id="{{ task.id }}" data-task-title="{{ task.title }}">
+            <i class="edit icon"></i>
+        </i>
+
+        <form class="task-form" action="/delete_task/{{ project.id }}/{{ task.id }}" method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <button class="delete-task-button" data-content="Delete"
+                    type="submit" data-variation="tiny inverted">
+                <i class="trash alternate outline icon"></i>
+            </button>
+
+
+            </input>
+        </form>
+    </div>
+{% endfor %}

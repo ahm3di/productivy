@@ -1,50 +1,52 @@
 {% extends 'base.html' %}
 
-{% block head %}{% endblock %}
+{% block head %}
+    <input type="hidden" name="csrf-token" content="{{ csrf_token() }}">
+{% endblock %}
 {% block body %}
-<div class="ui center aligned page grid">
-    <div class="column">
-        <h1 class="ui teal header">Register an account</h1>
+    <div class="ui center aligned page grid">
+        <div class="column">
+            <h1 class="ui teal header">Register an account</h1>
 
-        <form id=register-form
-              class="ui large form" action="/register" method="POST">
-            {{ form.hidden_tag() }}
-            <div class="ui segment">
-                <div class="field">
-                    <div class="ui left icon input">
-                        <i class="user icon"></i>
-                        {{ form.username(placeholder="Username",
-                        maxlength="20")}}
+            <form id=register-form
+                  class="ui large form" action="/register" method="POST">
+                {{ form.hidden_tag() }}
+                <div class="ui segment">
+                    <div class="field">
+                        <div class="ui left icon input">
+                            <i class="user icon"></i>
+                            {{ form.username(placeholder="Username",
+                        maxlength="20") }}
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui left icon input">
+                            <i class="envelope icon"></i>
+                            {{ form.email(placeholder="Email address",
+                        maxlength="50") }}
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui left icon input">
+                            <i class="lock icon"></i>
+                            {{ form.password(placeholder="Password",
+                        maxlength="20") }}
+                        </div>
+                    </div>
+                    <div class="field">
+                        <button class="ui fluid large teal submit button"
+                                type="submit" value="submit">Sign Up
+                        </button>
+                    </div>
+                    <div class="ui error message">
                     </div>
                 </div>
-                <div class="field">
-                    <div class="ui left icon input">
-                        <i class="envelope icon"></i>
-                        {{ form.email(placeholder="Email address",
-                        maxlength="50")}}
-                    </div>
-                </div>
-                <div class="field">
-                    <div class="ui left icon input">
-                        <i class="lock icon"></i>
-                        {{ form.password(placeholder="Password",
-                        maxlength="20")}}
-                    </div>
-                </div>
-                <div class="field">
-                    <button class="ui fluid large teal submit button"
-                            type="submit" value="submit">Sign Up
-                    </button>
-                </div>
-                <div class="ui error message">
-                </div>
+            </form>
+
+            <div class="ui message">
+                Already have an account? <a href="{{ url_for('login') }}">Login</a>
             </div>
-        </form>
-
-        <div class="ui message">
-            Already have an account? <a href="{{url_for('login')}}">Login</a>
         </div>
     </div>
-</div>
 
 {% endblock %}
