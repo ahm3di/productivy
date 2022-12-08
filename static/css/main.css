@@ -2,37 +2,49 @@ body {
     margin-top: 5%;
 }
 
-#todo-row, #current-users-row {
+#task-row, #current-users-row {
     display: table;
 }
 
-#incomplete-todo, #completed-todo {
+#incomplete-task, #completed-task {
     color: black;
 }
 
-#completed-todo {
+#completed-task {
     text-decoration: line-through;
 }
 
-.update-todo-button {
+.task-form {
+    display: inline;
+}
+
+.update-task-button {
     background: white;
     color: grey;
     margin-left: 1%;
     cursor: pointer;
 }
 
-.delete-todo-button {
-    background: white;
+.delete-task-button {
+    background: none;
+    border: none;
     color: grey;
-    margin-left: 1%;
+    margin-left: 5px;
+    padding: 0;
+    cursor: pointer;
 }
 
-.update-todo-button:hover {
+.update-task-button:hover {
     color: steelblue;
 }
 
-.delete-todo-button:hover {
+.delete-task-button:hover {
     color: red;
+}
+
+.modal-form {
+    padding: 1%;
+    width: 50%;
 }
 
 .remember-me-checkbox {
@@ -70,44 +82,54 @@ body {
     margin-right: auto;
 }
 
-#project-settings {
+#project-settings-dropdown {
     background-color: white;
-}
-
-.modal-form {
-    width: 50%;
 }
 
 .modal-buttons {
     margin-top: 1%;
 }
 
-#remove-user-icon{
-    color:red;
+#remove-user-icon {
+    color: red;
 }
 
-.low-priority{
+.low-priority {
     color: #54C300;
 }
 
-.medium-priority{
+.medium-priority {
     color: orange;
     margin-right: 1%;
 }
 
-.high-priority{
+.high-priority {
     color: #E70000;
 }
 
-#priority-dropdown{
+#priority-dropdown {
     min-width: 125px
 }
 
-#todo-input{
+#task-input {
     width: 60%;
 }
 
-.column{
-    max-width:450px;
+.column {
+    max-width: 450px;
 }
 
+.task-text {
+    all: unset;
+    cursor: pointer;
+}
+
+.remove-user-form {
+    display: inline;
+}
+
+
+.remove-user-button {
+    all: unset;
+    cursor: pointer;
+}

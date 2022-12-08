@@ -1,85 +1,85 @@
 {% extends 'base.html' %}
 
-{% block head %}{% endblock %}
+{% block head %}
+    <input type="hidden" name="csrf-token" content="{{ csrf_token() }}">
+{% endblock %}
 {% block body %}
 
-<main class="ui centered grid">
+    <main class="ui centered grid">
 
-    <div class="ui secondary pointing menu">
-        <a class="item active" href="{{url_for('index')}}">
-            Home
-        </a>
-        <a class="item" href="{{url_for('profile')}}">
-            Profile
-        </a>
-        <div class="right menu">
-            <a class="ui item" href="{{url_for('logout')}}">
-                Logout
+        <div class="ui secondary pointing menu">
+            <a class="item active" href="{{ url_for('index') }}">
+                Home
             </a>
+            <a class="item" href="{{ url_for('profile') }}">
+                Profile
+            </a>
+            <div class="right menu">
+                <a class="ui item" href="{{ url_for('logout') }}">
+                    Logout
+                </a>
+            </div>
         </div>
-    </div>
 
-    <div class="row">
-        <form id="project-input" class="ui action left icon input"
-              action="/add_project" method="post">
-            <input type="text" name="name" placeholder="Add new project..."
-                   maxlength="60">
-            <button class="ui teal button" type="submit">Add</button>
-        </form>
-    </div>
+        <div class="row">
+            <form id="project-input" class="ui action left icon input"
+                  action="/add_project" method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <input type="text" name="name" placeholder="Add new project..."
+                       maxlength="60">
+                <button class="ui teal button" type="submit">Add</button>
+            </form>
+        </div>
 
-    <div class="row">
-        <h2> Your Projects: </h2>
-    </div>
-    <div class="row ui cards">
-        {% for project in projects %}
+        <div class="row">
+            <h2> Your Projects: </h2>
+        </div>
+        <div class="row ui cards">
+            {% for project in projects %}
 
-        <a class="card" href="/project/{{ project.id }}"/>
+                <a class="card" href="/project/{{ project.id }}"/>
 
-        <div class="content">
-            <div class="left floated header">{{ project.name }}</div>
-            <div class="right floated meta" id="project-members">
-                <i class="left floated users icon"></i>
-                <div class="column">
-                    {{project.users | list | count}} Member(s)
+                <div class="content">
+                    <div class="left floated header">{{ project.name }}</div>
+                    <div class="right floated meta" id="project-members">
+                        <i class="left floated users icon"></i>
+                        <div class="column">
+                            {{ project.users | list | count }} Member(s)
+                        </div>
+                    </div>
                 </div>
-            </div>
+
+                <div class="content ui grid">
+                    <div class=" card-incomplete">
+                        <i class="times icon"></i>Incomplete tasks:
+                        {{ project.tasks |selectattr("complete","equalto",False)| list | count }}
+                    </div>
+
+                    <div class="card-complete">
+                        <i class="check icon"></i>
+                        Completed tasks:
+                        {{ project.tasks |selectattr("complete")| list | count }}
+                    </div>
+
+                    <div class="card-total">
+                        <i class="tasks icon"></i>
+                        Total tasks:
+                        {{ project.tasks | list | count }}
+                    </div>
+                </div>
+
+                <div class="extra content">
+                    <div class="left floated">
+                        {{ (utc_to_gmt(project.last_update)).strftime('%d-%m-%y | %H:%M') }}
+                    </div>
+                    <div class="right floated author">
+                        {% set last_user = users| selectattr("id", "equalto", project.last_user) | first %}
+                        <img class="ui avatar image" src={{ url_for('static',
+                     filename='profile_images/' +last_user.image) }}>
+                        {{ last_user.username }}
+                    </div>
+                </div>
+            {% endfor %}
         </div>
-
-        <div class="content ui grid">
-            <div class=" card-incomplete">
-                <i class="times icon"></i>Incomplete tasks:
-                {{project.todos |selectattr("complete","equalto",False)|
-                list | count}}
-            </div>
-
-            <div class="card-complete">
-                <i class="check icon"></i>
-                Completed tasks:
-                {{project.todos |selectattr("complete")|
-                list | count}}
-            </div>
-
-            <div class="card-total">
-                <i class="tasks icon"></i>
-                Total tasks:
-                {{project.todos | list | count}}
-            </div>
-        </div>
-
-        <div class="extra content">
-            <div class="left floated">
-                {{ (utc_to_gmt(project.last_update)).strftime('%d-%m-%y | %H:%M')}}
-            </div>
-            <div class="right floated author">
-                {% set last_user = users| selectattr("id",
-                "equalto", project.last_user) | first %}
-                <img class="ui avatar image" src={{url_for('static',
-                     filename='profile_images/' +last_user.image)}}>
-                {{last_user.username }}
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-</main>
+    </main>
 {% endblock %}

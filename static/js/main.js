@@ -1,4 +1,41 @@
 $(function () {
+    // Load jQuery animations
+    activateAnimations()
+
+    var csrf_token = $('input[name=csrf-token]').attr('content')
+    var project_id = $('input[name=project_id]').attr('content')
+
+    // Start SSE stream to get updates when user is on project page
+    if (project_id) {
+        const source = new EventSource("/sse_stream/" + project_id)
+        source.onmessage = function (e) {
+            if (e.data === "1") {
+                // If there is new data, request it using AJAX
+                $.ajax({
+                    url: '/project_update',
+                    type: "POST",
+                    async: true,
+                    headers: {
+                        "X-CSRFToken": csrf_token,
+                    },
+                    data: {
+                        value: project_id,
+                    },
+                    success: function (data) {
+                        // Replace existing task list with updated list
+                        document.getElementById("task-list").innerHTML = data
+                        // Reload jQuery animations after tasks are updated
+                        activateAnimations()
+                    }
+                });
+            }
+            // Close the stream
+            if (e.data === 0) {
+                source.close()
+            }
+        }
+    }
+
     // Custom fomantic rule to check if username is already registered
     $.fn.form.settings.rules.checkUser = function (value, formIdentifier) {
         let result = true
@@ -6,24 +43,22 @@ $(function () {
             url: '/validate_user',
             type: "POST",
             async: false,
+            headers: {
+                "X-CSRFToken": csrf_token,
+            },
             data: {
                 value: value,
             },
             dataType: 'json',
             success: function (data) {
-                console.log(data);
                 // If username or email exist in database an error is displayed
-                if (data == "0" && formIdentifier == "username") {
+                if (data === "0" && formIdentifier === "username") {
                     result = false;
-                } else if (data == "1" && formIdentifier == "email") {
+                } else if (data === "1" && formIdentifier === "email") {
                     result = false;
                 }
                 // Error displayed if username or email don't exist
-                else if (data == "4" && formIdentifier == "userEmail") {
-                    result = false;
-                } else {
-                    result = true;
-                }
+                else result = !(data === "4" && formIdentifier === "userEmail");
             }
         });
         return result;
@@ -36,28 +71,26 @@ $(function () {
             url: '/validate_user',
             type: "POST",
             async: false,
+            headers: {
+                "X-CSRFToken": csrf_token,
+            },
             data: {
                 value: value,
                 identifier: "updateDetails"
             },
             dataType: 'json',
             success: function (data) {
-                console.log(data);
                 // Error displayed if username or email are already taken
-                if (data == "2" && formIdentifier == "username") {
+                if (data === "2" && formIdentifier === "username") {
                     result = false;
-                } else if (data == "3" && formIdentifier == "email") {
-                    result = false;
-                } else {
-                    result = true;
-                }
+                } else result = !(data === "3" && formIdentifier === "email");
             }
         });
         return result;
     };
 
-    // Form validation to prevent empty project and todo names
-    $('#todo-form, #update-todo-form, #update-project-form')
+    // Form validation to prevent empty project and task names
+    $('#task-form, #update-task-form, #update-project-form')
         .form({
             fields: {
                 title: 'empty',
@@ -169,7 +202,7 @@ $(function () {
             }
         });
 
-    // Form validation to prevent empty project and todo names
+    // Form validation to prevent empty project and task names
     $('#add-users-form')
         .form({
             fields: {
@@ -230,45 +263,78 @@ $(function () {
             }
         });
 
+    function activateAnimations() {
+        $('.update-task-button, .delete-task-button-button, .priority-indicator, .remove-user-button').popup();
 
-    $('.update-todo-button, .delete-todo-button, .priority-indicator').popup();
+        $('.ui.dropdown').dropdown();
 
-    $('.ui.dropdown').dropdown();
+        $('.selection.dropdown').dropdown();
 
-    $('.selection.dropdown').dropdown();
+        $('.update-project-button').on('click', function () {
+            $('#update-project-modal').modal('show');
 
-    $('.update-project-button').on('click', function () {
-        $('#update-project-modal').modal('show');
-    });
+            $('#update-project-cancel').on('click', function () {
+                $('#update-project-modal').modal('hide');
+            });
+        });
 
-    $('.manage-users-button').on('click', function () {
-        $('#manage-users-modal').modal('show');
-    });
+        $('.manage-users-button').on('click', function () {
+            $('#manage-users-modal').modal('show');
 
-    $('.delete-project-button').on('click', function () {
-        $('#delete-project-modal').modal('show');
-    });
+            $('#manage-users-cancel').on('click', function () {
+                $('#manage-users-modal').modal('hide');
+            });
+        });
 
-    $('.update-todo-button').on('click', function () {
-        // Get todo title and id from hidden fields
-        var current_todo_id = $('.current-todo-id').val();
-        var current_todo_title = $('.current-todo-title').val();
+        $('.delete-project-button').on('click', function () {
+            $('#delete-project-modal').modal('show');
+        });
 
-        // Set modal input placeholder to todo title
-        $('#update-todo-modal #update-todo-input').val(current_todo_title)
+        $('.update-task-button').on('click', function () {
+            // Get task title and id
+            let current_task_id = $(this).attr('data-task-id')
+            let current_task_title = $(this).attr('data-task-title')
 
-        // Get form action url
-        var action = $('#update-todo-modal #update-todo-form').attr("action");
+            // Set modal input placeholder to task title
+            $('#update-task-modal #update-task-input').val(current_task_title)
 
-        // Append todo title to form action url
-        $('#update-todo-modal #update-todo-form').attr('action',
-            action + current_todo_id);
+            // Get form action url
+            const action = $('#update-task-form').attr("action");
 
-        //Display modal
-        $('#update-todo-modal').modal('show')
-    });
+            // Append task id to form action url
+            $('#update-task-form').attr('action',
+                action + current_task_id);
 
-    $('#update-user-button').on('click', function () {
-        $('#update-user-modal').modal('show');
-    });
+            // Display modal
+            $('#update-task-modal').modal('show')
+
+            // Hide modal on cancel
+            $('#task-modal-cancel').on('click', function () {
+                $('#update-task-modal').modal('hide');
+            });
+        });
+
+        $('#update-user-button').on('click', function () {
+            $('#update-user-modal').modal('show');
+
+            // Hide modal on cancel
+            $('#update-user-cancel').on('click', function () {
+                $('#update-user-modal').modal('hide');
+            });
+        });
+
+        $('.task-dropdown').dropdown({
+            'onChange': function (value, text, $selectedItem) {
+                const action = $('.update-priority-form').attr("action")
+                $('.update-priority-form').attr('action',
+                    action + value);
+                $(".update-priority-form").submit();
+            }
+        });
+        $("#project-settings-dropdown").dropdown({
+            action: 'nothing',
+            action: 'hide'
+        })
+
+    }
 });

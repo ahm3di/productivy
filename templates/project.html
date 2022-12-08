@@ -1,241 +1,193 @@
 {% extends 'base.html' %}
 
-{% block head %}{% endblock %}
+{% block head %}
+    <input type="hidden" name="project_id" content="{{ project.id }}">
+    <input type="hidden" name="csrf-token" content="{{ csrf_token() }}">
+{% endblock %}
 {% block body %}
-<main class="ui centered grid">
+    <main class="ui centered grid">
 
-    <div class="ui secondary pointing menu">
-        <a class="item" href="{{url_for('index')}}">
-            Home
-        </a>
-        <a class="item" href="{{url_for('profile')}}">
-            Profile
-        </a>
-        <div class="right menu">
-            <a class="ui item" href="{{url_for('logout')}}">
-                Logout
+        <div class="ui secondary pointing menu">
+            <a class="item" href="{{ url_for('index') }}">
+                Home
             </a>
-        </div>
-    </div>
-
-    <header class="row" id="project-header-row">
-        <h1>{{project.name}}
-            <div class="ui icon top left pointing dropdown button"
-                 id="project-settings">
-                <i class="bars icon"></i>
-                <div class="menu">
-                    <div class="header">Manage project</div>
-                    <a class="item update-project-button">
-                        <i class="edit icon"></i> Edit </a>
-                    <a class="item delete-project-button">
-                        <i class="trash icon"></i> Delete</a>
-                    <a class="item manage-users-button">
-                        <i class="users icon"></i> Manage users</a>
-                </div>
-            </div>
-        </h1>
-    </header>
-
-    <div class="row">
-        <form id="todo-form" class="ui action input"
-              action="/add_todo/{{project.id}}" method="post">
-
-            <input id="todo-input" type="text" name="title"
-                   placeholder="Enter Task..." maxlength="50">
-            <div class="ui selection dropdown small" id="priority-dropdown">
-                <input type="hidden" name="priority">
-                <i class="dropdown icon"></i>
-                <div class="default text">Priority</div>
-                <div class="menu">
-                    <div class="item" data-value="0">
-                        <span> <i
-                                class="circle icon low-priority"></i>Low</span>
-                    </div>
-                    <div class="item" data-value="1">
-                        <span> <i class="circle icon medium-priority"></i>Medium</span>
-                    </div>
-                    <div class="item" data-value="2">
-                        <span><i
-                                class="circle icon high-priority"></i>High</span>
-                    </div>
-                </div>
-            </div>
-            <button class="ui teal button" type="submit">Add</button>
-        </form>
-    </div>
-
-    {% for todo in todo_list|sort(attribute='complete') %}
-    <div class="row" id="todo-row">
-        <div class="ui icon inverted top left pointing dropdown">
-            <div class="menu">
-                <a href="/update_todo_priority/{{ project.id }}/{{ todo.id }}/{{ 0 }}"
-                   class="item"><i class="circle icon low-priority"></i>Low
-                    priority
-                </a>
-                <a href="/update_todo_priority/{{ project.id }}/{{ todo.id }}/{{ 1 }}"
-                   class="item"><i class="circle icon medium-priority"></i>Medium
-                    priority
-                </a>
-                <a href="/update_todo_priority/{{ project.id }}/{{ todo.id }}/{{ 2 }}"
-                   class="item"><i class="circle icon high-priority"></i>High
-                    priority
+            <a class="item" href="{{ url_for('profile') }}">
+                Profile
+            </a>
+            <div class="right menu">
+                <a class="ui item" href="{{ url_for('logout') }}">
+                    Logout
                 </a>
             </div>
-            <i
-
-                    {% if todo.priority== 0 %}
-                    class="circle icon low-priority priority-indicator"
-                    data-content="Low Priority" data-variation="tiny inverted"
-
-                    {% elif todo.priority== 1 %}
-                    class="circle icon medium-priority priority-indicator"
-                    data-content="Medium Priority"
-                    data-variation="tiny inverted"
-
-                    {% else %}
-                    class="circle icon high-priority priority-indicator"
-                    data-content="High Priority" data-variation="tiny inverted"
-                    {% endif %}
-            ></i>
         </div>
 
+        <header class="row" id="project-header-row">
+            <input type="hidden" name="project-id" value="{{ project.id }}">
+            <h1>{{ project.name }}
+                <div class="ui icon top left pointing dropdown button"
+                     id="project-settings-dropdown">
+                    <i class="bars icon"></i>
+                    <div class="menu">
+                        <div class="header">Manage project</div>
+                        <a class="item update-project-button">
+                            <i class="edit icon"></i> Edit </a>
+                        <a class="item delete-project-button">
+                            <i class="trash icon"></i> Delete</a>
+                        <a class="item manage-users-button">
+                            <i class="users icon"></i> Manage users</a>
+                    </div>
+                </div>
+            </h1>
+        </header>
 
-        {% if todo.complete == False %}
-        <a href="/update_todo_status/{{ project.id }}/{{ todo.id }}"
-           id="incomplete-todo"> {{ todo.title }} </a>
-        {% else %}
-        <a href="/update_todo_status/{{ project.id }}/{{ todo.id }}"
-           id="completed-todo"> {{ todo.title }} </a>
-        {% endif %}
+        <div class="row">
+            <form id="task-form" class="ui action input"
+                  action="/add_task/{{ project.id }}" method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <input id="task-input" type="text" name="title"
+                       placeholder="Enter Task..." maxlength="50">
+                <div class="ui selection dropdown small" id="priority-dropdown">
+                    <input type="hidden" name="priority">
+                    <i class="dropdown icon"></i>
+                    <div class="default text">Priority</div>
+                    <div class="menu">
+                        <div class="item" data-value="0">
+                            <span> <i class="circle icon low-priority"></i>Low</span>
+                        </div>
+                        <div class="item" data-value="1">
+                            <span> <i class="circle icon medium-priority"></i>Medium</span>
+                        </div>
+                        <div class="item" data-value="2">
+                            <span><i class="circle icon high-priority"></i>High</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="ui teal button" type="submit">Add</button>
+            </form>
+        </div>
+        <div class="ui grid row" id="task-list">
+            {% include 'task_list.html' %}
+        </div>
+    </main>
 
-        <input class="current-todo-id" type="hidden" value="{{todo.id}}">
-        <input class="current-todo-title" type="hidden" value="{{todo.title}}">
-
-        <a class="ui icon update-todo-button" data-content="Edit"
-           data-variation="tiny inverted">
+    <!-- Update project modal -->
+    <div class="ui basic large modal top aligned" id="update-project-modal">
+        <div class="ui icon header">
             <i class="edit icon"></i>
-        </a>
-
-        <a href="/delete_todo/{{ project.id }}/{{ todo.id }}"
-           class="ui icon delete-todo-button" data-content="Delete"
-           data-variation="tiny inverted">
-            <i class="trash alternate outline icon"></i>
-        </a>
-    </div>
-    {% endfor %}
-</main>
-
-<!-- Update project modal -->
-<div class="ui basic large modal top aligned" id="update-project-modal">
-    <div class="ui icon header">
-        <i class="edit icon"></i>
-        Update project
-    </div>
-
-    <div class="ui centered grid">
-        <form class="ui form modal-form" id="update-project-form"
-              action="/update_project/{{project.id}}" method="post">
-
-            <input type="text" name="name" value="{{project.name}}">
-
-            <div class="row modal-buttons">
-                <button class="ui green ok inverted submit button"
-                        type="submit"><i class="checkmark icon"></i>Update
-                </button>
-
-                <a class="ui red basic cancel inverted button"
-                   href="/project/{{project.id}}">
-                    <i class="remove icon"></i>Cancel
-                </a>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- Manage users modal -->
-<div class="ui basic large modal top aligned" id="manage-users-modal">
-    <div class="ui icon header">
-        <i class="user icon"></i>
-        Add user
-    </div>
-
-    <div class="ui centered grid">
-        <form class="ui form modal-form" id="add-users-form"
-              action="/add_user/{{project.id}}" method="post">
-
-            <input type="text" name="name" placeholder="Enter username/email">
-
-            <div class="row modal-buttons">
-                <div class="ui error message">
-                </div>
-                <button class="ui green ok inverted submit button"
-                        type="submit"><i class="checkmark icon"></i>Add
-                </button>
-
-                <a class="ui red basic cancel inverted button"
-                   href="/project/{{project.id}}">
-                    <i class="remove icon"></i>Cancel
-                </a>
-            </div>
-        </form>
-        <h3 class="row"> Current Users: </h3>
-        {%for user in users%}
-        <div class="row" id="current-users-row">
-            {{user.username}}
-            <a href="/delete_user/{{ project.id }}/{{ user.id }}">
-                <i class="minus circle icon" id="remove-user-icon"></i> </a>
+            Update project
         </div>
-        {%endfor%}
 
+        <div class="ui centered grid">
+            <form class="ui form modal-form" id="update-project-form"
+                  action="/update_project/{{ project.id }}" method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <input type="text" name="name" value="{{ project.name }}">
+
+                <div class="row modal-buttons">
+                    <button class="ui green ok inverted submit button"
+                            type="submit"><i class="checkmark icon"></i>Update
+                    </button>
+
+                    <button class="ui red basic cancel inverted button" type="button"
+                            id="update-project-cancel">
+                        <i class="remove icon"></i>Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 
-<!-- Update todo modal -->
-<div class="ui basic large modal top aligned" id="update-todo-modal">
-    <div class="ui icon header">
-        <i class="user icon"></i>
-        Update task
+    <!-- Manage users modal -->
+    <div class="ui basic large modal top aligned" id="manage-users-modal">
+        <div class="ui icon header">
+            <i class="users icon"></i>
+            Manage Users
+        </div>
+
+        <div class="ui centered grid">
+            <form class="ui form modal-form" id="add-users-form"
+                  action="/add_user/{{ project.id }}" method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <input type="text" name="name" placeholder="Enter username/email">
+
+                <div class="row modal-buttons">
+                    <div class="ui error message">
+                    </div>
+                    <button class="ui green ok inverted submit button"
+                            type="submit"><i class="checkmark icon"></i>Add
+                    </button>
+
+                    <button class="ui red basic cancel inverted button" id="manage-users-cancel" type="button">
+                        <i class="remove icon"></i>Cancel
+                    </button>
+                </div>
+            </form>
+            <h3 class="row"> Current Users: </h3>
+            {% for user in users %}
+                <div class="row" id="current-users-row">
+                    {{ user.username }}
+                    <form class="remove-user-form" action="/remove_user/{{ project.id }}/{{ user.id }}" method="post">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <button class="remove-user-button" type=submit>
+                            <i class="minus circle icon" id="remove-user-icon"></i>
+                        </button>
+                    </form>
+
+                </div>
+            {% endfor %}
+
+        </div>
     </div>
 
-    <div class="ui centered grid">
-        <form id=update-todo-form class="ui form modal-form"
-              action="/update_todo/{{project.id}}/" method="post">
+    <!-- Update task modal -->
+    <div class="ui basic large modal top aligned" id="update-task-modal">
+        <div class="ui icon header">
+            <i class="user icon"></i>
+            Update task
+        </div>
 
-            <input id="update-todo-input" type="text" name="title">
+        <div class="ui centered grid">
+            <form class="ui form modal-form" id="update-task-form"
+                  action="/update_task/{{ project.id }}/" method="post">
 
-            <div class="row modal-buttons">
-                <button class="ui green ok inverted submit button"
-                        type="submit"><i class="checkmark icon"></i>Update
+                <input id="update-task-input" type="text" name="title">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+                <div class="row modal-buttons">
+                    <button class="ui green ok inverted submit button"
+                            type="submit"><i class="checkmark icon"></i>Update
+                    </button>
+
+                    <button class="ui red basic cancel inverted button" id="task-modal-cancel" type="button">
+                        <i class="remove icon"></i>Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Confirm delete modal -->
+    <div class="ui ui mini inverted top aligned modal" id="delete-project-modal">
+        <div class="header">
+            Delete project
+        </div>
+        <div class="content">
+            <p>Are you sure you want to delete this project?</p>
+        </div>
+        <form class="ui form" id="delete-project-form"
+              action="/delete_project/{{ project.id }}" method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <div class="actions">
+                <button class="ui right floated negative labeled icon button" type="button">
+                    <i class="remove icon"></i>
+                    No
                 </button>
-
-                <a class="ui red basic cancel inverted button"
-                   href="/project/{{project.id}}">
-                    <i class="remove icon"></i>Cancel
-                </a>
+                <button class="ui positive right floated labeled icon button" type="submit">
+                    <i class="checkmark icon"></i>
+                    Yes
+                </button>
             </div>
         </form>
-    </div>
-</div>
 
-<!-- Confirm delete modal -->
-<div class="ui ui mini inverted top aligned modal" id="delete-project-modal">
-    <div class="header">
-        Delete project
     </div>
-    <div class="content">
-        <p>Are you sure you want to delete this project?</p>
-    </div>
-    <div class="actions">
-        <a class="ui negative button" href="/project/{{project.id}}">
-            <i class="remove icon"></i>
-            No
-        </a>
-        <a class="ui positive right labeled icon button"
-           href="/delete_project/{{project.id}}">
-            <i class="checkmark icon"></i>
-            Yes
-        </a>
-    </div>
-
-</div>
 {% endblock %}
