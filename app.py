@@ -12,6 +12,7 @@ from flask_bcrypt import Bcrypt
 from datetime import datetime, timezone
 import pytz
 import os
+from flask_socketio import SocketIO, join_room
 
 UPLOAD_FOLDER = 'static/profile_images'
 app = Flask(__name__)
@@ -20,6 +21,7 @@ app.config.from_object(env_config)
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 csrf = CSRFProtect(app)
+socketio = SocketIO(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -126,26 +128,9 @@ class Project(db.Model):
     tasks = db.relationship('Task', backref='project')
 
 
-# SSE stream used to monitor changes to database and alert frontend
-@app.route("/sse_stream/<int:project_id>")
-@login_required
-def sse_stream(project_id):
-    current_project = check_user_access(project_id)
-    last_update_time = current_project.last_update
-    if current_project:
-        def check_for_update():
-            with app.app_context():
-                current_update_time = last_update_time
-                while last_update_time == current_update_time:
-                    db.session.expire_all()
-                    try:
-                        current_update_time = Project.query.filter_by(id=project_id).first().last_update
-                    except AttributeError:
-                        yield f'data: {0}\n\n'
-                    time.sleep(3)
-            yield f'data: {1}\n\n'
-
-        return Response(check_for_update(), mimetype='text/event-stream')
+@socketio.on('join')
+def on_join(data):
+    join_room(data)
 
 
 # Render updated task list
@@ -287,6 +272,7 @@ def delete_project(project_id):
         db.session.delete(task)
     db.session.delete(current_project)
     db.session.commit()
+
     return redirect(url_for("index"))
 
 
@@ -351,6 +337,8 @@ def add_task(project_id):
     current_project.tasks.append(new_task)
     db.session.add(new_task)
     db.session.commit()
+    update_time = current_project.last_update.strftime("%Y-%m-%d %H:%M:%S")
+    socketio.emit('update', room=str(project_id))
     return redirect(url_for("project", project_id=current_project.id))
 
 
@@ -363,6 +351,7 @@ def update_task_status(project_id, task_id):
     task.complete = not task.complete
     update_project_details(current_project)
     db.session.commit()
+    socketio.emit('update', room=str(project_id))
     return redirect(url_for("project", project_id=project_id))
 
 
@@ -375,6 +364,7 @@ def update_task_priority(project_id, task_id, priority):
     task.priority = priority
     update_project_details(current_project)
     db.session.commit()
+    socketio.emit('update', room=str(project_id))
     return redirect(url_for("project", project_id=project_id))
 
 
@@ -387,6 +377,7 @@ def delete_task(project_id, task_id):
     update_project_details(current_project)
     db.session.delete(task)
     db.session.commit()
+    socketio.emit('update', room=str(project_id))
     return redirect(url_for("project", project_id=project_id))
 
 
@@ -400,6 +391,8 @@ def update_task(project_id, task_id):
         task.title = request.form.get("title")
         update_project_details(current_project)
         db.session.commit()
+        print(current_project.last_update)
+        socketio.emit('update', room=str(project_id))
         return redirect(url_for("project", project_id=project_id))
 
 
@@ -428,3 +421,7 @@ def profile():
         return redirect(url_for('profile'))
     return render_template('profile.html', user=current_user, image=image,
                            form=form)
+
+
+if __name__ == '__main__':
+    socketio.run(app)

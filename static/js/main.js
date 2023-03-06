@@ -5,35 +5,39 @@ $(function () {
     var csrf_token = $('input[name=csrf-token]').attr('content')
     var project_id = $('input[name=project_id]').attr('content')
 
-    // Start SSE stream to get updates when user is on project page
+    // Open WebSocket to get updates when user is on project page
     if (project_id) {
-        const source = new EventSource("/sse_stream/" + project_id)
-        source.onmessage = function (e) {
-            if (e.data === "1") {
-                // If there is new data, request it using AJAX
-                $.ajax({
-                    url: '/project_update',
-                    type: "POST",
-                    async: true,
-                    headers: {
-                        "X-CSRFToken": csrf_token,
-                    },
-                    data: {
-                        value: project_id,
-                    },
-                    success: function (data) {
-                        // Replace existing task list with updated list
-                        document.getElementById("task-list").innerHTML = data
-                        // Reload jQuery animations after tasks are updated
-                        activateAnimations()
-                    }
-                });
-            }
-            // Close the stream
-            if (e.data === 0) {
-                source.close()
-            }
-        }
+
+        var socket = io();
+
+        // Join socketIO room for current project
+        socket.emit('join', project_id)
+
+        // Ping client every 30 seconds to keep connection alive
+        setInterval(function () {
+            socket.emit('ping')
+        }, 30000)
+
+        // Request updated project data on socket message
+        socket.on('update', function (data) {
+            $.ajax({
+                url: '/project_update',
+                type: "POST",
+                async: true,
+                headers: {
+                    "X-CSRFToken": csrf_token,
+                },
+                data: {
+                    value: project_id,
+                },
+                success: function (data) {
+                    // Replace existing task list with updated list
+                    document.getElementById("task-list").innerHTML = data
+                    // Reload jQuery animations after tasks are updated
+                    activateAnimations()
+                }
+            });
+        });
     }
 
     // Custom fomantic rule to check if username is already registered
