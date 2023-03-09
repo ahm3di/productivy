@@ -30,7 +30,7 @@ login_manager.login_view = "login"
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    return db.session.get(User, user_id)
 
 
 # Used to convert UTC time to GMT and inject values in jinja2 template
